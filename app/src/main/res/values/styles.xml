@@ -1,0 +1,171 @@
+<!--
+  ~ Copyright (c) 2010 - 2017, Nordic Semiconductor ASA
+  ~ All rights reserved.
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ 1. Redistributions of source code must retain the above copyright notice, this
+  ~    list of conditions and the following disclaimer.
+  ~
+  ~ 2. Redistributions in binary form, except as embedded into a Nordic
+  ~    Semiconductor ASA integrated circuit in a product or a software update for
+  ~    such product, must reproduce the above copyright notice, this list of
+  ~    conditions and the following disclaimer in the documentation and/or other
+  ~    materials provided with the distribution.
+  ~
+  ~ 3. Neither the name of Nordic Semiconductor ASA nor the names of its
+  ~    contributors may be used to endorse or promote products derived from this
+  ~    software without specific prior written permission.
+  ~
+  ~ 4. This software, with or without modification, must only be used with a
+  ~    Nordic Semiconductor ASA integrated circuit.
+  ~
+  ~ 5. Any software provided in binary form under this license must not be reverse
+  ~    engineered, decompiled, modified and/or disassembled.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY NORDIC SEMICONDUCTOR ASA "AS IS" AND ANY EXPRESS
+  ~ OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+  ~ OF MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  ~ DISCLAIMED. IN NO EVENT SHALL NORDIC SEMICONDUCTOR ASA OR CONTRIBUTORS BE
+  ~ LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+  ~ GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  ~ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  ~ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+  ~ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="@style/AppThemeBase">
+        <!-- Empty -->
+    </style>
+
+    <style name="AppTheme.TranslucentStatusBar">
+        <!-- Empty -->
+    </style>
+
+    <style name="AppThemeBase" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Buttons (AppBarLayout color has been overridden by ActionBarThemeOverlay)-->
+        <item name="colorPrimary">@color/nordicLake</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Status bar color -->
+        <item name="colorPrimaryDark">@color/nordicBlueDark</item>
+        <!-- Set in @color/selectable -->
+        <item name="colorPrimaryVariant">@color/nordicLake</item>
+        <!-- FABs -->
+        <item name="colorSecondary">@color/nordicLake</item>
+        <!-- FABs icons and ripples -->
+        <item name="colorOnSecondary">@color/white</item>
+        <!-- MaterialCardView background -->
+        <item name="colorSurface">@color/white</item>
+        <!-- Checkboxes, Radio buttons, ProgressBar, SeekBar, links (clickable URLs) -->
+        <item name="colorAccent">@color/nordicLake</item>
+        <!-- Error views -->
+        <item name="colorError">@color/nordicRed</item>
+        <!-- Text on error views -->
+        <item name="colorOnError">@color/white</item>
+        <!--
+             Toolbar's titles color, AlertDialog title and message, android:textAppearanceLarge color,
+             EditText text color, PagerTitleStrip titles, Spinner view
+         -->
+        <!--<item name="android:textColorPrimary">...</item>-->
+        <!-- Toolbar overflow menu color, also used in @color/selectable for unselected buttons -->
+        <!--<item name="android:textColorSecondary">...</item>-->
+        <!-- TextViews text color -->
+        <item name="android:textColorTertiary">@color/nordicDarkGray</item>
+        <!-- All buttons should not have border, except specified otherwise -->
+        <item name="materialButtonStyle">?borderlessButtonStyle</item>
+        <!-- All TextInputLayout should use OutlinedBox style  -->
+        <item name="textInputStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox</item>
+    </style>
+
+    <!--
+    Style for the App Bar Layouts.
+    colorPrimary is used by Buttons and other components which we want to have a different color.
+    -->
+    <style name="ActionBarThemeOverlay" parent="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <!-- Background for TabLayouts -->
+        <item name="colorPrimary">@color/nordicBlue</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Title and Hamburger menu -->
+        <item name="android:textColorPrimary">?colorOnPrimary</item>
+        <!-- Toolbar's text buttons -->
+        <item name="actionMenuTextColor">?colorOnPrimary</item>
+    </style>
+
+    <style name="ActionBarPopupThemeOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
+
+    <!-- Style used by the Toolbar -->
+    <style name="ActionBar.TitleText" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">#fff</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Widget" />
+
+    <style name="Widget.Toolbar" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Widget.ScannerSubtitle">
+        <item name="android:textColor">?colorPrimaryVariant</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- About screen -->
+
+    <style name="PreferenceCategoryLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/settings_divider</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+
+    <style name="PreferenceCategoryTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
+    <style name="PreferenceCategory">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:drawablePadding">32dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
+    <style name="PreferenceCategoryDivider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@drawable/list_divider_holo_light</item>
+        <item name="android:layout_marginLeft">72dp</item>
+    </style>
+
+    <style name="PreferenceCategorySummary">
+        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
+</resources>

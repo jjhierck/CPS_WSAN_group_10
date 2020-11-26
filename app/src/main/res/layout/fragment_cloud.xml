@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2010 - 2017, Nordic Semiconductor ASA
+  ~ All rights reserved.
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ 1. Redistributions of source code must retain the above copyright notice, this
+  ~    list of conditions and the following disclaimer.
+  ~
+  ~ 2. Redistributions in binary form, except as embedded into a Nordic
+  ~    Semiconductor ASA integrated circuit in a product or a software update for
+  ~    such product, must reproduce the above copyright notice, this list of
+  ~    conditions and the following disclaimer in the documentation and/or other
+  ~    materials provided with the distribution.
+  ~
+  ~ 3. Neither the name of Nordic Semiconductor ASA nor the names of its
+  ~    contributors may be used to endorse or promote products derived from this
+  ~    software without specific prior written permission.
+  ~
+  ~ 4. This software, with or without modification, must only be used with a
+  ~    Nordic Semiconductor ASA integrated circuit.
+  ~
+  ~ 5. Any software provided in binary form under this license must not be reverse
+  ~    engineered, decompiled, modified and/or disassembled.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY NORDIC SEMICONDUCTOR ASA "AS IS" AND ANY EXPRESS
+  ~ OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+  ~ OF MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  ~ DISCLAIMED. IN NO EVENT SHALL NORDIC SEMICONDUCTOR ASA OR CONTRIBUTORS BE
+  ~ LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+  ~ GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  ~ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  ~ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+  ~ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<ScrollView android:id="@+id/main_container"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context="no.nordicsemi.android.nrfthingy.MainActivity">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
+
+		<com.google.android.material.card.MaterialCardView
+			android:id="@+id/feature_view"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:layout_marginLeft="@dimen/cardview_horizontal_padding"
+			android:layout_marginRight="@dimen/cardview_horizontal_padding"
+			android:layout_marginTop="@dimen/cardview_vertical_padding">
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
+				<androidx.appcompat.widget.Toolbar
+					android:id="@+id/card_toolbar_feature_control"
+					android:layout_width="0dp"
+					android:layout_height="?actionBarSize"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					app:logo="@drawable/ic_remote"
+					app:popupTheme="@style/ActionBarPopupThemeOverlay"
+					app:title="@string/feature_control"
+					app:titleMarginStart="@dimen/card_view_toolbar_title_margin"
+					app:titleTextAppearance="@style/Widget.Toolbar"/>
+
+				<TextView
+					android:id="@+id/temperature_title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="@dimen/activity_horizontal_margin"
+					android:text="@string/temperature_title"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@+id/card_toolbar_feature_control"/>
+
+				<TextView
+					android:id="@+id/temperature_event"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/event_name_temperature_update"
+					android:textSize="12sp"
+					app:layout_constraintStart_toStartOf="@+id/temperature_title"
+					app:layout_constraintTop_toBottomOf="@+id/temperature_title"/>
+
+				<TextView
+					android:id="@+id/pressure_title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="@dimen/activity_vertical_margin"
+					android:text="@string/pressure_title"
+					app:layout_constraintStart_toStartOf="@+id/temperature_title"
+					app:layout_constraintTop_toBottomOf="@+id/temperature_event"/>
+
+				<TextView
+					android:id="@+id/pressure_event"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/event_name_pressure_update"
+					android:textSize="12sp"
+					app:layout_constraintStart_toStartOf="@+id/temperature_title"
+					app:layout_constraintTop_toBottomOf="@+id/pressure_title"/>
+
+				<TextView
+					android:id="@+id/button_state_title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="@dimen/activity_vertical_margin"
+					android:text="@string/button_state"
+					app:layout_constraintStart_toStartOf="@+id/temperature_title"
+					app:layout_constraintTop_toBottomOf="@+id/pressure_event"/>
+
+				<TextView
+					android:id="@+id/button_event"
+					android:layout_width="wrap_content"
+					android:layout_height="0dp"
+					android:layout_marginBottom="8dp"
+					android:text="@string/event_name_button_press"
+					android:textSize="12sp"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintStart_toStartOf="@+id/temperature_title"
+					app:layout_constraintTop_toBottomOf="@+id/button_state_title"/>
+
+				<androidx.appcompat.widget.SwitchCompat
+					android:id="@+id/switch_temperature"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="@dimen/activity_vertical_margin"
+					app:layout_constraintBottom_toBottomOf="@+id/temperature_event"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintTop_toTopOf="@+id/temperature_title"
+					tools:layout_editor_absoluteY="64dp"/>
+
+				<androidx.appcompat.widget.SwitchCompat
+					android:id="@+id/switch_pressure"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					app:layout_constraintBottom_toBottomOf="@+id/pressure_event"
+					app:layout_constraintEnd_toEndOf="@+id/switch_temperature"
+					app:layout_constraintTop_toTopOf="@+id/pressure_title"/>
+
+				<androidx.appcompat.widget.SwitchCompat
+					android:id="@+id/switch_button"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					app:layout_constraintBottom_toBottomOf="@+id/button_event"
+					app:layout_constraintEnd_toEndOf="@+id/switch_temperature"
+					app:layout_constraintTop_toTopOf="@+id/button_state_title"/>
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+		</com.google.android.material.card.MaterialCardView>
+
+		<com.google.android.material.card.MaterialCardView
+			android:id="@+id/feature_info_view"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:layout_marginLeft="@dimen/cardview_horizontal_padding"
+			android:layout_marginRight="@dimen/cardview_horizontal_padding"
+			android:layout_marginTop="@dimen/cardview_vertical_padding"
+			app:cardCornerRadius="2dp">
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
+				<androidx.appcompat.widget.Toolbar
+					android:id="@+id/card_toolbar_feature_info"
+					android:layout_width="0dp"
+					android:layout_height="?actionBarSize"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					app:logo="@drawable/ic_info_grey"
+					app:popupTheme="@style/ActionBarPopupThemeOverlay"
+					app:title="@string/feature_info"
+					app:titleMarginStart="@dimen/card_view_toolbar_title_margin"
+					app:titleTextAppearance="@style/Widget.Toolbar"/>
+
+				<TextView
+					android:id="@+id/temperature_title_info"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="@dimen/activity_horizontal_margin"
+					android:text="@string/temperature_title"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@+id/card_toolbar_feature_info"/>
+
+				<TextView
+					android:id="@+id/pressure_title_info"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="@dimen/activity_vertical_margin"
+					android:text="@string/pressure_title"
+					app:layout_constraintStart_toStartOf="@+id/temperature_title_info"
+					app:layout_constraintTop_toBottomOf="@+id/temperature_title_info"/>
+
+				<TextView
+					android:id="@+id/button_state_info"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="@dimen/activity_vertical_margin"
+					android:text="@string/button_state"
+					app:layout_constraintStart_toStartOf="@+id/temperature_title_info"
+					app:layout_constraintTop_toBottomOf="@+id/pressure_title_info"/>
+
+				<TextView
+					android:id="@+id/temperature_interval_title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="@dimen/activity_vertical_margin"
+					android:text="@string/interval_temperature"
+					app:layout_constraintStart_toStartOf="@+id/temperature_title_info"
+					app:layout_constraintTop_toBottomOf="@+id/button_state_info"/>
+
+				<TextView
+					android:id="@+id/pressure_interval_title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="@dimen/activity_vertical_margin"
+					android:text="@string/interval_pressure"
+					app:layout_constraintStart_toStartOf="@+id/temperature_title_info"
+					app:layout_constraintTop_toBottomOf="@+id/temperature_interval_title"/>
+
+				<TextView
+					android:id="@+id/cloud_token_title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="@dimen/activity_vertical_margin"
+					android:layout_marginTop="@dimen/activity_vertical_margin"
+					android:text="@string/settings_cloud_token"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintStart_toStartOf="@+id/temperature_title_info"
+					app:layout_constraintTop_toBottomOf="@+id/pressure_interval_title"/>
+
+				<TextView
+					android:id="@+id/temperature"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="@dimen/activity_vertical_margin"
+					android:text="@string/dash"
+					app:layout_constraintBaseline_toBaselineOf="@+id/temperature_title_info"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintTop_toBottomOf="@+id/card_toolbar_feature_info"
+					tools:layout_editor_absoluteY="64dp"/>
+
+				<TextView
+					android:id="@+id/pressure"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/dash"
+					app:layout_constraintBaseline_toBaselineOf="@+id/pressure_title_info"
+					app:layout_constraintEnd_toEndOf="@+id/temperature"
+					app:layout_constraintTop_toBottomOf="@+id/temperature"/>
+
+				<TextView
+					android:id="@+id/button_state"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/button_state_unknown"
+					app:layout_constraintBaseline_toBaselineOf="@+id/button_state_info"
+					app:layout_constraintEnd_toEndOf="@+id/temperature"
+					app:layout_constraintTop_toBottomOf="@+id/pressure"/>
+
+				<TextView
+					android:id="@+id/temperature_interval"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/dash"
+					app:layout_constraintBaseline_toBaselineOf="@+id/temperature_interval_title"
+					app:layout_constraintEnd_toEndOf="@+id/temperature"
+					app:layout_constraintTop_toBottomOf="@+id/button_state"/>
+
+				<TextView
+					android:id="@+id/pressure_interval"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/dash"
+					app:layout_constraintBaseline_toBaselineOf="@+id/pressure_interval_title"
+					app:layout_constraintEnd_toEndOf="@+id/temperature"
+					app:layout_constraintTop_toBottomOf="@+id/temperature_interval"/>
+
+				<TextView
+					android:id="@+id/cloud_token"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:ellipsize="end"
+					android:maxLines="1"
+					android:maxWidth="100dp"
+					android:text="@string/dash"
+					app:layout_constraintBaseline_toBaselineOf="@+id/cloud_token_title"
+					app:layout_constraintEnd_toEndOf="@+id/temperature"
+					app:layout_constraintTop_toBottomOf="@+id/pressure_interval"/>
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+		</com.google.android.material.card.MaterialCardView>
+
+		<com.google.android.material.card.MaterialCardView
+			android:id="@+id/data_statistics_view"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:layout_marginBottom="@dimen/activity_vertical_margin"
+			android:layout_marginLeft="@dimen/cardview_horizontal_padding"
+			android:layout_marginRight="@dimen/cardview_horizontal_padding"
+			android:layout_marginTop="@dimen/cardview_vertical_padding">
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+
+				<androidx.appcompat.widget.Toolbar
+					android:id="@+id/card_toolbar_data_statistics"
+					android:layout_width="0dp"
+					android:layout_height="?actionBarSize"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					app:logo="@drawable/ic_data_usage"
+					app:popupTheme="@style/ActionBarPopupThemeOverlay"
+					app:title="@string/data_statistics"
+					app:titleMarginStart="@dimen/card_view_toolbar_title_margin"
+					app:titleTextAppearance="@style/Widget.Toolbar"/>
+
+				<TextView
+					android:id="@+id/uploaded_title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="@dimen/activity_horizontal_margin"
+					android:text="@string/uploaded_title"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@+id/card_toolbar_data_statistics"/>
+
+				<TextView
+					android:id="@+id/downloaded_title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="@dimen/activity_vertical_margin"
+					android:layout_marginTop="@dimen/activity_vertical_margin"
+					android:text="@string/downloaded_title"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintStart_toStartOf="@+id/uploaded_title"
+					app:layout_constraintTop_toBottomOf="@+id/uploaded_title"/>
+
+				<TextView
+					android:id="@+id/uploaded"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="@dimen/activity_vertical_margin"
+					tools:text="0 B"
+					app:layout_constraintBaseline_toBaselineOf="@+id/uploaded_title"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintTop_toBottomOf="@+id/card_toolbar_data_statistics"
+					tools:layout_editor_absoluteY="64dp"/>
+
+				<TextView
+					android:id="@+id/downloaded"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					tools:text="0 B"
+					app:layout_constraintBaseline_toBaselineOf="@+id/downloaded_title"
+					app:layout_constraintEnd_toEndOf="@+id/uploaded"
+					app:layout_constraintTop_toBottomOf="@+id/uploaded"/>
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+		</com.google.android.material.card.MaterialCardView>
+	</LinearLayout>
+</ScrollView>

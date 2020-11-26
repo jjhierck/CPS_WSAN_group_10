@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="Gradle: no.nordicsemi.android.support.v18:scanner:1.4.3@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f1c2ed246c9b22657598500766c2cf39/scanner-1.4.3/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1e041cb850d9ef4093d6c4c942156a09/jetified-scanner-1.4.3/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1e041cb850d9ef4093d6c4c942156a09/jetified-scanner-1.4.3/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1e041cb850d9ef4093d6c4c942156a09/jetified-scanner-1.4.3/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/no.nordicsemi.android.support.v18/scanner/1.4.3/bbcf5d4f3ab23f6aaaa2aa068afc8bc33367288/scanner-1.4.3-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/no.nordicsemi.android.support.v18/scanner/1.4.3/5ce627058bc9a174fdbef6d7fe3473b42ad9011b/scanner-1.4.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="Gradle: no.nordicsemi.android:dfu:1.9.2@aar">
+    <ANNOTATIONS>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cfec77be0979eb38b25af26ff4bdfdc4/jetified-dfu-1.9.2/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cfec77be0979eb38b25af26ff4bdfdc4/jetified-dfu-1.9.2/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cfec77be0979eb38b25af26ff4bdfdc4/jetified-dfu-1.9.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cfec77be0979eb38b25af26ff4bdfdc4/jetified-dfu-1.9.2/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/no.nordicsemi.android/dfu/1.9.2/4aad229446aa7555c0cc3d56e84bcd82894c27b7/dfu-1.9.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/no.nordicsemi.android/dfu/1.9.2/d00b016ed9d2114be04bee1def5ab07ac889112a/dfu-1.9.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2010 - 2017, Nordic Semiconductor ASA
+  ~ All rights reserved.
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification,
+  ~ are permitted provided that the following conditions are met:
+  ~
+  ~ 1. Redistributions of source code must retain the above copyright notice, this
+  ~    list of conditions and the following disclaimer.
+  ~
+  ~ 2. Redistributions in binary form, except as embedded into a Nordic
+  ~    Semiconductor ASA integrated circuit in a product or a software update for
+  ~    such product, must reproduce the above copyright notice, this list of
+  ~    conditions and the following disclaimer in the documentation and/or other
+  ~    materials provided with the distribution.
+  ~
+  ~ 3. Neither the name of Nordic Semiconductor ASA nor the names of its
+  ~    contributors may be used to endorse or promote products derived from this
+  ~    software without specific prior written permission.
+  ~
+  ~ 4. This software, with or without modification, must only be used with a
+  ~    Nordic Semiconductor ASA integrated circuit.
+  ~
+  ~ 5. Any software provided in binary form under this license must not be reverse
+  ~    engineered, decompiled, modified and/or disassembled.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY NORDIC SEMICONDUCTOR ASA "AS IS" AND ANY EXPRESS
+  ~ OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+  ~ OF MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  ~ DISCLAIMED. IN NO EVENT SHALL NORDIC SEMICONDUCTOR ASA OR CONTRIBUTORS BE
+  ~ LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  ~ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+  ~ GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  ~ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  ~ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+  ~ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin">
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp">
+
+        <View
+            android:id="@+id/label_1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/white_key_height"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/white_keys_bg"
+            android:elevation="6dp"
+            app:layout_constraintEnd_toStartOf="@+id/label_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="-15dp"/>
+
+        <View
+            android:id="@+id/label_2"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/white_key_height"
+            android:background="@drawable/white_keys_bg"
+            android:elevation="6dp"
+            app:layout_constraintEnd_toStartOf="@+id/label_3"
+            app:layout_constraintStart_toEndOf="@id/label_1"
+            app:layout_constraintTop_toTopOf="@+id/label_1"
+            tools:layout_editor_absoluteX="-15dp"/>
+
+        <View
+            android:id="@+id/label_3"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/white_key_height"
+            android:background="@drawable/white_keys_bg"
+            android:elevation="6dp"
+            app:layout_constraintEnd_toStartOf="@+id/label_4"
+            app:layout_constraintStart_toEndOf="@+id/label_2"
+            app:layout_constraintTop_toTopOf="@+id/label_1"
+            tools:layout_editor_absoluteX="-15dp"/>
+
+        <View
+            android:id="@+id/label_4"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/white_key_height"
+            android:background="@drawable/white_keys_bg"
+            android:elevation="6dp"
+            app:layout_constraintEnd_toEndOf="@+id/label_5"
+            app:layout_constraintStart_toEndOf="@+id/label_3"
+            app:layout_constraintTop_toTopOf="@+id/label_1"
+            tools:layout_editor_absoluteX="-15dp"/>
+
+        <View
+            android:id="@+id/label_5"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/white_key_height"
+            android:background="@drawable/white_keys_bg"
+            android:elevation="6dp"
+            app:layout_constraintEnd_toStartOf="@+id/label_6"
+            app:layout_constraintStart_toEndOf="@+id/label_4"
+            app:layout_constraintTop_toTopOf="@+id/label_1"
+            tools:layout_editor_absoluteX="-15dp"/>
+
+        <View
+            android:id="@+id/label_6"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/white_key_height"
+            android:background="@drawable/white_keys_bg"
+            android:elevation="6dp"
+            app:layout_constraintEnd_toStartOf="@+id/label_7"
+            app:layout_constraintStart_toEndOf="@+id/label_5"
+            app:layout_constraintTop_toTopOf="@+id/label_1"
+            tools:layout_editor_absoluteX="-15dp"/>
+
+        <View
+            android:id="@+id/label_7"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/white_key_height"
+            android:background="@drawable/white_keys_bg"
+            android:elevation="6dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/label_6"
+            app:layout_constraintTop_toTopOf="@+id/label_1"
+            tools:layout_editor_absoluteX="-15dp"/>
+
+        <TextView
+            android:id="@+id/label_8"
+            android:layout_width="@dimen/black_key_width"
+            android:layout_height="@dimen/black_key_height"
+            android:background="@drawable/black_keys_bg"
+            android:elevation="9dp"
+            app:layout_constraintLeft_toLeftOf="@+id/label_2"
+            app:layout_constraintRight_toRightOf="@+id/label_1"
+            app:layout_constraintTop_toTopOf="@+id/label_1"/>
+
+        <TextView
+            android:id="@+id/label_9"
+            android:layout_width="@dimen/black_key_width"
+            android:layout_height="@dimen/black_key_height"
+            android:background="@drawable/black_keys_bg"
+            android:elevation="9dp"
+            app:layout_constraintLeft_toLeftOf="@+id/label_3"
+            app:layout_constraintRight_toLeftOf="@+id/label_3"
+            app:layout_constraintTop_toTopOf="@+id/label_2"/>
+
+        <TextView
+            android:id="@+id/label_10"
+            android:layout_width="@dimen/black_key_width"
+            android:layout_height="@dimen/black_key_height"
+            android:background="@drawable/black_keys_bg"
+            android:elevation="9dp"
+            app:layout_constraintLeft_toLeftOf="@+id/label_5"
+            app:layout_constraintRight_toLeftOf="@+id/label_5"
+            app:layout_constraintTop_toTopOf="@+id/label_4"/>
+
+        <TextView
+            android:id="@+id/label_11"
+            android:layout_width="@dimen/black_key_width"
+            android:layout_height="@dimen/black_key_height"
+            android:background="@drawable/black_keys_bg"
+            android:elevation="9dp"
+            app:layout_constraintLeft_toLeftOf="@+id/label_6"
+            app:layout_constraintRight_toLeftOf="@+id/label_6"
+            app:layout_constraintTop_toTopOf="@+id/label_5"/>
+
+        <TextView
+            android:id="@+id/label_12"
+            android:layout_width="@dimen/black_key_width"
+            android:layout_height="@dimen/black_key_height"
+            android:background="@drawable/black_keys_bg"
+            android:elevation="9dp"
+            app:layout_constraintLeft_toLeftOf="@+id/label_7"
+            app:layout_constraintRight_toLeftOf="@+id/label_7"
+            app:layout_constraintTop_toTopOf="@+id/label_6"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/cardview_vertical_padding">
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/volume"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <SeekBar
+            android:id="@+id/seek_bar_volume"
+            style="@style/Widget.AppCompat.SeekBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_weight="1"
+            android:max="100"
+            android:progress="90"/>
+
+        <TextView
+            android:id="@+id/frequency_volume"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            tools:text="90"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CPS_WSAN_2020.iml" filepath="$PROJECT_DIR$/.idea/modules/CPS_WSAN_2020.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/CPS_WSAN_2020.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/CPS_WSAN_2020.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/thingylib/CPS_WSAN_2020.thingylib.iml" filepath="$PROJECT_DIR$/.idea/modules/thingylib/CPS_WSAN_2020.thingylib.iml" />
+    </modules>
+  </component>
+</project>
