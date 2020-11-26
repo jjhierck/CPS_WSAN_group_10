@@ -40,16 +40,21 @@ package no.nordicsemi.android.nrfthingy.common;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.bluetooth.BluetoothDevice;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcel;
 import android.os.ParcelUuid;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -60,14 +65,18 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import no.nordicsemi.android.nrfthingy.R;
+import no.nordicsemi.android.nrfthingy.thingy.ThingyService;
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat;
 import no.nordicsemi.android.support.v18.scanner.ScanCallback;
 import no.nordicsemi.android.support.v18.scanner.ScanFilter;
 import no.nordicsemi.android.support.v18.scanner.ScanResult;
 import no.nordicsemi.android.support.v18.scanner.ScanSettings;
+import no.nordicsemi.android.thingylib.ThingySdkManager;
+import no.nordicsemi.android.thingylib.utils.ThingyUtils;
 
 /**
  * ScannerFragment class scan required BLE devices and shows them in a list. This class scans and filter devices with given BLE Service UUID which may be null. It contains a
@@ -91,6 +100,8 @@ public class ScannerFragment extends DialogFragment {
     private ParcelUuid mUuid;
     private boolean mIsScanning = false;
 
+    private ThingySdkManager mThingySdkManager;
+
     /**
      * Static implementation of fragment so that it keeps data when phone orientation is changed For standard BLE Service UUID, we can filter devices using normal android provided command
      * startScanLe() with required BLE Service UUID For custom BLE Service UUID, we will use class ScannerServiceParser to filter out required device
@@ -111,7 +122,9 @@ public class ScannerFragment extends DialogFragment {
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Bundle args = getArguments();
-        mUuid = args.getParcelable(PARAM_UUID);
+//        mUuid = args.getParcelable(PARAM_UUID);
+        mUuid = new ParcelUuid(ThingyUtils.THINGY_BASE_UUID);
+        mThingySdkManager = ThingySdkManager.getInstance();
     }
 
     @Override
@@ -220,6 +233,7 @@ public class ScannerFragment extends DialogFragment {
             public void run() {
                 if (mIsScanning) {
                     stopScan();
+                    dismiss();  // Stop the scanning activity window
                 }
             }
         }, SCAN_DURATION);
@@ -247,10 +261,32 @@ public class ScannerFragment extends DialogFragment {
 
         @Override
         public void onBatchScanResults(final List<ScanResult> results) {
+            BluetoothDevice device;
+            int rssi;
+            String address;
+            String deviceName;
+
             if (results.size() > 0 && troubleshootView.getVisibility() == View.VISIBLE) {
                 troubleshootView.setVisibility(View.GONE);
             }
+
+            for (final ScanResult result : results) {
+                device = result.getDevice();
+                rssi = result.getRssi();  // Signal strength
+                address = device.getAddress();
+                deviceName = device.getName();
+
+                if (getActivity() != null) {
+                    mThingySdkManager.connectToThingy(getActivity().getApplicationContext(), device, ThingyService.class);
+                    Log.i("scanCallback", "Connected " + deviceName + " @ " + address);
+                } else {
+                    Log.e("scanCallback", "Not in activity now!");
+                }
+            }
+
             mAdapter.update(results);
+
+
         }
 
         @Override

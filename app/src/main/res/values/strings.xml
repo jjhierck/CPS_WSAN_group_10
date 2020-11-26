@@ -206,6 +206,8 @@
     <string name="orientation">Orientation</string>
     <string name="tap_count">Taps</string>
     <string name="connect">Connect</string>
+    <string name="connect_more">Connect More</string>
+    <string name="refresh">Refresh</string>
     <string name="disconnect">Disconnect</string>
 
 
@@ -471,4 +473,7 @@
         <item quantity="other">%d are disconnected</item>
         <item quantity="many">%d are disconnected</item>
     </plurals>
+    <string name="no_devices">No Thingies connected</string>
+    <string name="devices_title">Connected devices</string>
+    <string name="connected_devices">Connected devices</string>
 </resources>
