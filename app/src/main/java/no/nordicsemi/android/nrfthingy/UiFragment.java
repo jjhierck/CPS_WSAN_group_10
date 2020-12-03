@@ -39,24 +39,35 @@
 package no.nordicsemi.android.nrfthingy;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import no.nordicsemi.android.nrfthingy.common.DeviceListAdapter;
+import no.nordicsemi.android.nrfthingy.common.MultipleScannerFragment;
 import no.nordicsemi.android.nrfthingy.common.ScannerFragmentListener;
 import no.nordicsemi.android.nrfthingy.common.Utils;
+import no.nordicsemi.android.nrfthingy.database.DatabaseContract;
 import no.nordicsemi.android.nrfthingy.database.DatabaseHelper;
+import no.nordicsemi.android.nrfthingy.thingy.Thingy;
 import no.nordicsemi.android.thingylib.ThingySdkManager;
+import no.nordicsemi.android.thingylib.utils.ThingyUtils;
+
+import static no.nordicsemi.android.nrfthingy.common.Utils.INITIAL_CONFIG_STATE;
+import static no.nordicsemi.android.nrfthingy.common.Utils.PREFS_INITIAL_SETUP;
+import static no.nordicsemi.android.nrfthingy.common.Utils.isAppInitialisedBefore;
 
 public class UiFragment extends Fragment implements ScannerFragmentListener {
     // NOTE: The old contents of this class can be found in OldUiFragment.java
@@ -66,9 +77,12 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
     TextView currentDevices;
     ListView devicesList;
 
+    private ImageView mHeaderToggle;
+
     private DeviceListAdapter mAdapter;
-    private BluetoothDevice mDevice;
+    private BluetoothDevice mSelectedDevice;
     private ThingySdkManager mThingySdkManager;
+    private MultipleScannerFragment mScannerFragment;
 
     private DatabaseHelper mDatabaseHelper;
 
@@ -84,8 +98,9 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mDevice = getArguments().getParcelable(Utils.CURRENT_DEVICE);
+            mSelectedDevice = getArguments().getParcelable(Utils.CURRENT_DEVICE);
         }
+        mScannerFragment = MultipleScannerFragment.getInstance(ThingyUtils.THINGY_BASE_UUID, this);
         mThingySdkManager = ThingySdkManager.getInstance();
         mDatabaseHelper = new DatabaseHelper(getActivity());
     }
@@ -124,10 +139,50 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
             @Override
             public void onClick(View v) {
                 // Connect to more devices here
+                mScannerFragment.show(getActivity().getSupportFragmentManager(), null); // Show the scanner fragment
             }
         });
 
         return rootView;
+    }
+
+    /**
+     * Adapted from InitialConfigurationActivity.getStarted()
+     */
+    public void addToDatabase(BluetoothDevice device, String name) {
+        if (!isAppInitialisedBefore(requireContext())) {
+            final SharedPreferences sp = requireContext().getSharedPreferences(PREFS_INITIAL_SETUP, requireActivity().MODE_PRIVATE);
+            sp.edit().putBoolean(INITIAL_CONFIG_STATE, true).apply();
+        }
+
+        final String address = mSelectedDevice.getAddress();
+
+        if (!mDatabaseHelper.isExist(address)) {
+            mDatabaseHelper.insertDevice(address, name); // device.getName());
+            mDatabaseHelper.updateNotificationsState(address, true, DatabaseContract.ThingyDbColumns.COLUMN_NOTIFICATION_TEMPERATURE);
+            mDatabaseHelper.updateNotificationsState(address, true, DatabaseContract.ThingyDbColumns.COLUMN_NOTIFICATION_PRESSURE);
+            mDatabaseHelper.updateNotificationsState(address, true, DatabaseContract.ThingyDbColumns.COLUMN_NOTIFICATION_HUMIDITY);
+            mDatabaseHelper.updateNotificationsState(address, true, DatabaseContract.ThingyDbColumns.COLUMN_NOTIFICATION_AIR_QUALITY);
+            mDatabaseHelper.updateNotificationsState(address, true, DatabaseContract.ThingyDbColumns.COLUMN_NOTIFICATION_COLOR);
+            mDatabaseHelper.updateNotificationsState(address, true, DatabaseContract.ThingyDbColumns.COLUMN_NOTIFICATION_BUTTON);
+            mDatabaseHelper.updateNotificationsState(address, true, DatabaseContract.ThingyDbColumns.COLUMN_NOTIFICATION_QUATERNION);
+            mThingySdkManager.setSelectedDevice(mSelectedDevice);
+        }
+        updateSelectionInDb(new Thingy(mSelectedDevice), false);
+    }
+
+    /**
+     * Copied from InitialConfigurationActivity
+     */
+    private void updateSelectionInDb(final no.nordicsemi.android.nrfthingy.thingy.Thingy thingy, final boolean selected) {
+        final ArrayList<Thingy> thingyList = mDatabaseHelper.getSavedDevices();
+        for (int i = 0; i < thingyList.size(); i++) {
+            if (thingy.getDeviceAddress().equals(thingyList.get(i).getDeviceAddress())) {
+                mDatabaseHelper.setLastSelected(thingy.getDeviceAddress(), selected);
+            } else {
+                mDatabaseHelper.setLastSelected(thingyList.get(0).getDeviceAddress(), !selected);
+            }
+        }
     }
 
     @Override

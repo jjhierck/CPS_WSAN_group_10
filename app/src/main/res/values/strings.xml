@@ -49,9 +49,11 @@
     <string name="no_ble">Device doesn\'t support BLE!</string>
 
     <string name="scanner_title">Select device:</string>
+    <string name="scanner_list">Devices:</string>
     <string name="scanner_empty">No device found</string>
     <string name="scanner_action_scan">Scan</string>
     <string name="scanner_action_cancel">Cancel</string>
+    <string name="scanner_action_stop">Stop</string>
     <string name="not_available">n/a</string>
     <string name="scanner_subtitle_not_bonded">AVAILABLE DEVICES:</string>
     <string name="dev_name_info">Name your Thingy:52</string>
