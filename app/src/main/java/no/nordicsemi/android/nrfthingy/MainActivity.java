@@ -990,7 +990,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         updateSelectionInDb(thingy, true);
     }
 
-    private void connect(final BluetoothDevice device) {
+    public void connect(final BluetoothDevice device) {
         mThingySdkManager.connectToThingy(this, device, ThingyService.class);
         final Thingy thingy = new Thingy(device);
         mThingySdkManager.setSelectedDevice(device);
@@ -1255,7 +1255,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void updateUiOnBind() {
+    void updateUiOnBind() {
         final ArrayList<Thingy> savedDevices = mDatabaseHelper.getSavedDevices();
         if (savedDevices.size() == 0) {
             invalidateOptionsMenu();
