@@ -37,6 +37,8 @@ public class ClhScan {
     private ArrayList<ClhAdvertisedData> mClhAdvDataList;
     private static final int MAX_ADVERTISE_LIST_ITEM=128;
 
+    private ClhAdvertisedData mClhData=new ClhAdvertisedData();
+
     public ClhScan()
     {
 
@@ -210,8 +212,20 @@ public class ClhScan {
             {//if this Cluster Head is the Sink node (ID=0), add data to waiting process list
                     mClhProcessData.addProcessPacketToBuffer(clhAdvData);
                     Log.i(LOG_TAG, "Add data to process list, len:" + mClhProcDataList.size());
+
+                    // Sent extra package to let nodes know where the sink is:
+                    byte clhPacketID = 1;
+                    //mClhThingySoundPower = 100;
+                    mClhData.setSourceID(mClhID);
+                    mClhData.setPacketID(clhPacketID);
+                    mClhData.setDestId(clhAdvData.getSourceID());
+                    mClhData.setHopCount((byte) 21);
+                    //mClhData.setThingyId(0);
+                    //mClhData.setThingyDataType(mClhThingyType);
+                    //mClhData.setSoundPower(mClhThingySoundPower);
+                    mClhAdvertiser.addAdvPacketToBuffer(mClhData, true);
             }
-            else {//normal CLuster Head (ID 0..127) add data to advertising list to forward
+            else if ((clhAdvData.getHopCounts() <= 20) && (clhAdvData.getDestinationID() != clhAdvData.getSourceID())) {//normal CLuster Head (ID 0..127) add data to advertising list to forward
                     mClhAdvertiser.addAdvPacketToBuffer(clhAdvData,false);
                     Log.i(LOG_TAG, "Add data to advertised list, len:" + mClhAdvDataList.size());
                     Log.i(LOG_TAG, "Advertise list at " + (mClhAdvDataList.size() - 1) + ":"

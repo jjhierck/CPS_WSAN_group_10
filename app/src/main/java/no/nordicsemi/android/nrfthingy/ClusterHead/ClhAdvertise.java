@@ -58,6 +58,10 @@ public class ClhAdvertise {
     private byte mCurrentPacketID= (byte) 1;
     private ArrayList<ClhAdvertisedData >mClhAdvDataList;
 
+    private byte standardDestinationID = 0;
+    private boolean receivedFromSink=false;
+    private int rank = 100;
+
     public ClhAdvertise(){//constructor with no params
         mClhAdvDataList= new ArrayList<ClhAdvertisedData>(MAX_ADVERTISE_LIST_ITEM);
     }
@@ -200,12 +204,26 @@ public class ClhAdvertise {
                 mCurrentPacketID++;
                 data.setPacketID(mCurrentPacketID);
             }
-            else
-            {//received packet over BLE scan, from other cluster head -> increase hopscount
-                byte hopcounts=data.getHopCounts();
+            else if(data.getHopCounts() > 20){
+
+                if (rank > (data.getHopCounts() - 20)){
+                    standardDestinationID = data.getSourceID();
+                    rank = data.getHopCounts() - 20;
+                }
+
+                byte hopcounts = data.getHopCounts();
                 hopcounts++;
                 data.setHopCount(hopcounts);
             }
+            else {//received packet over BLE scan, from other cluster head -> increase hopcount
+                byte hopcounts = data.getHopCounts();
+                hopcounts++;
+                data.setHopCount(hopcounts);
+                if(rank < 100) {
+                    data.setDestId(standardDestinationID);
+                }
+            }
+
             mClhAdvDataList.add(data);
             Log.i(LOG_TAG,"add Adv packet, size:"+mClhAdvDataList.size());
         }
