@@ -474,7 +474,7 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
             }
         }, 1000); //the time you want to delay in milliseconds
 
-        //"Start" button Click Hander
+        //"Start" button Click Handler
         // get Cluster Head ID (0-127) in text box to initialize advertiser
         //Then Start advertising
         //ID=0: Sink
