@@ -464,7 +464,7 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
                     ArrayList<ClhAdvertisedData> procList=mClhProcessor.getProcessDataList();
                     for(int i=0; i<procList.size();i++)
                     {
-                        if(i==10) break; //just display 10 line in one cycle
+                        //if(i==10) break; //just display 10 line in one cycle
                         byte[] data=procList.get(0).getParcelClhData();
                         mClhLog.append("Clap detected with Packet id: " + (int) data[1] + ", from source id: " + (int) data[0] + ", from thingy id: " + (int) data[4] + " with hop count: " + (int) data[2]);
                         mClhLog.append("\r\n");
