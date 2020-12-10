@@ -102,7 +102,7 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
         }
         mScannerFragment = MultipleScannerFragment.getInstance(ThingyUtils.THINGY_BASE_UUID, this);
         mThingySdkManager = ThingySdkManager.getInstance();
-        mDatabaseHelper = new DatabaseHelper(getActivity());
+        mDatabaseHelper = new DatabaseHelper(requireContext());
     }
 
     @Override
@@ -129,9 +129,12 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
         refreshConnectedDevicesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAdapter.clearDevices();
-                List<BluetoothDevice> devices = mThingySdkManager.getConnectedDevices();
-                mAdapter.updateDevices(devices);
+            mAdapter.clearDevices();
+            List<BluetoothDevice> devices = mThingySdkManager.getConnectedDevices();
+            mAdapter.updateDevices(devices);
+            for (final BluetoothDevice device : devices) {
+                addToDatabase(device, device.getName());
+            }
             }
         });
 
@@ -155,7 +158,7 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
             sp.edit().putBoolean(INITIAL_CONFIG_STATE, true).apply();
         }
 
-        final String address = mSelectedDevice.getAddress();
+        final String address = device.getAddress();
 
         if (!mDatabaseHelper.isExist(address)) {
             mDatabaseHelper.insertDevice(address, name); // device.getName());
@@ -166,9 +169,9 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
             mDatabaseHelper.updateNotificationsState(address, true, DatabaseContract.ThingyDbColumns.COLUMN_NOTIFICATION_COLOR);
             mDatabaseHelper.updateNotificationsState(address, true, DatabaseContract.ThingyDbColumns.COLUMN_NOTIFICATION_BUTTON);
             mDatabaseHelper.updateNotificationsState(address, true, DatabaseContract.ThingyDbColumns.COLUMN_NOTIFICATION_QUATERNION);
-            mThingySdkManager.setSelectedDevice(mSelectedDevice);
+            mThingySdkManager.setSelectedDevice(device);
         }
-        updateSelectionInDb(new Thingy(mSelectedDevice), false);
+        updateSelectionInDb(new Thingy(device), false);
     }
 
     /**

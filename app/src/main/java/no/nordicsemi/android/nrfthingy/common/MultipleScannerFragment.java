@@ -64,15 +64,21 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import no.nordicsemi.android.nrfthingy.MainActivity;
 import no.nordicsemi.android.nrfthingy.R;
 import no.nordicsemi.android.nrfthingy.UiFragment;
+import no.nordicsemi.android.nrfthingy.thingy.Thingy;
 import no.nordicsemi.android.nrfthingy.thingy.ThingyService;
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat;
 import no.nordicsemi.android.support.v18.scanner.ScanCallback;
@@ -91,7 +97,7 @@ public class MultipleScannerFragment extends DialogFragment {
 
     private final static String PARAM_UUID = "param_uuid";
     private final static String PARAM_UUID1 = "param_uuid1";
-    private final static long SCAN_DURATION = 30000;  // Scan for 30 seconds
+    private final static long SCAN_DURATION = 8000;  // Scan for 8 seconds
     /* package */static final int NO_RSSI = -1000;
 
     private final static int REQUEST_PERMISSION_REQ_CODE = 76; // any 8-bit number
@@ -107,6 +113,8 @@ public class MultipleScannerFragment extends DialogFragment {
     private boolean mIsScanning = false;
 
     private ThingySdkManager mThingySdkManager;
+
+    private Map<String, ScanResult> mResultsMap;
 
     /**
      * Static implementation of fragment so that it keeps data when phone orientation is changed For standard BLE Service UUID, we can filter devices using normal android provided command
@@ -132,6 +140,7 @@ public class MultipleScannerFragment extends DialogFragment {
 //        mUuid = args.getParcelable(PARAM_UUID);
         mUuid = new ParcelUuid(ThingyUtils.THINGY_BASE_UUID);
         mThingySdkManager = ThingySdkManager.getInstance();
+        mResultsMap = new HashMap<>();
     }
 
     @Override
@@ -240,6 +249,7 @@ public class MultipleScannerFragment extends DialogFragment {
             public void run() {
                 if (mIsScanning) {
                     stopScan();
+                    connectDevices();
                     dismiss();  // Stop the scanning activity window
                 }
             }
@@ -260,6 +270,44 @@ public class MultipleScannerFragment extends DialogFragment {
         }
     }
 
+    private void connectDevices() {
+        List<ScanResult> resultList = new ArrayList<ScanResult>(mResultsMap.values());
+
+        // Create a comparator to sort the array list based on the rssi values (high to low)
+        Comparator<ExtendedBluetoothDevice> compareByRssi = new Comparator<ExtendedBluetoothDevice>() {
+            @Override
+            public int compare(ExtendedBluetoothDevice o1, ExtendedBluetoothDevice o2) {
+                return Integer.compare(o2.rssi, o1.rssi);
+            }
+        };
+
+        // Populate a list with devices to be sorted later
+        ArrayList<ExtendedBluetoothDevice> sortedDevices = new ArrayList<>();
+        for (final ScanResult result : resultList) {
+            Log.w("scanCallback", String.format("Unsorted: %s (rssi: %d)", result.getDevice().getName(), result.getRssi()));
+            BluetoothDevice device = result.getDevice();
+            int rssi = result.getRssi();  // Signal strength
+            sortedDevices.add(new ExtendedBluetoothDevice(device, rssi));
+        }
+        Collections.sort(sortedDevices, compareByRssi); // Sort the list by RSSI
+
+        int nrConnectedDevices = mThingySdkManager.getConnectedDevices().size();  // See how many devices are currently connected
+        int i = 0; // Results counter
+        for (final ExtendedBluetoothDevice extDevice : sortedDevices) {
+            if (i + nrConnectedDevices < 4) { // Only connect up to 4 devices with the strongest RSSI
+                BluetoothDevice device = extDevice.device;
+                String address = device.getAddress();
+
+                mThingySdkManager.connectToThingy(requireContext(), device, ThingyService.class);
+
+                Log.w("scanCallback", String.format("Connecting to %s (rssi: %d)", device.getName(), extDevice.rssi));
+                i++; // increment the results counter
+                Toast toast = Toast.makeText(requireContext(), String.format("Connecting to %s (rssi: %d)", device.getName(), extDevice.rssi), Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
+    }
+
     private ScanCallback scanCallback = new ScanCallback() {
         @Override
         public void onScanResult(final int callbackType, @NonNull final ScanResult result) {
@@ -272,52 +320,10 @@ public class MultipleScannerFragment extends DialogFragment {
             if (results.size() > 0 && troubleshootView.getVisibility() == View.VISIBLE) {
                 troubleshootView.setVisibility(View.GONE);
             }
-
-            // Create a comparator to sort the array list based on the rssi values
-            Comparator<ExtendedBluetoothDevice> compareByRssi = new Comparator<ExtendedBluetoothDevice>() {
-                @Override
-                public int compare(ExtendedBluetoothDevice o1, ExtendedBluetoothDevice o2) {
-                    return Integer.compare(o1.rssi, o2.rssi);
-                }
-            };
-
-            // Populate a list with devices to be sorted later
-            ArrayList<ExtendedBluetoothDevice> sortedDevices = new ArrayList<>();
             for (final ScanResult result : results) {
-                BluetoothDevice device = result.getDevice();
-                int rssi = result.getRssi();  // Signal strength
-                sortedDevices.add(new ExtendedBluetoothDevice(device, rssi));
+                mResultsMap.put(result.getDevice().getAddress(), result);
             }
-            Collections.sort(sortedDevices, compareByRssi); // Sort the list by RSSI
 
-            int nrConnectedDevices = mThingySdkManager.getConnectedDevices().size();  // See how many devices are currently connected
-            int i = 0; // Results counter
-            for (final ExtendedBluetoothDevice extDevice : sortedDevices) {
-                if (i + nrConnectedDevices < 4) { // Only connect up to 4 devices with the strongest RSSI
-                    BluetoothDevice device = extDevice.device;
-                    String address = device.getAddress();
-                    String deviceName = String.format("t%d_%d", i, extDevice.rssi); // Set device name to "t<id>_<rssi>" e.g. t0_-50
-
-                    ((MainActivity) requireActivity()).connect(device);
-                    //mThingySdkManager.connectToThingy(getContext(), device, ThingyService.class);
-                    //returnFragment.addToDatabase(device, deviceName);
-
-//                    while (!mThingySdkManager.isConnected(device)) {
-//                        try {
-//                            Log.w("scanCallback", String.format("Initial Service is not yet discovered for %s", device.getName()));
-//                            Thread.sleep(1000);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                    Log.w("scanCallback", String.format("Initial Service is discovered for %s", device.getName()));
-
-                    Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Connected to " + deviceName, Toast.LENGTH_SHORT);
-                    toast.show();
-                    Log.w("scanCallback", "Connected " + deviceName + " @ " + address);
-                    i++; // increment the results counter
-                }
-            }
             mAdapter.update(results);
         }
 
