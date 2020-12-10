@@ -143,6 +143,42 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
 
         @Override
         public void onServiceDiscoveryCompleted(BluetoothDevice device) {
+            mThingies = mThingySdkManager.getConnectedDevices();
+            for (BluetoothDevice tempDevice: mThingies){
+                if (mThingySdkManager.isConnected(tempDevice)) {
+                    if (!mStartPlayingAudio) {
+                        int r = 150;
+                        int g = 0;
+
+                        int b = 0;
+                        //mStartPlayingAudio = true;
+                        startThingyOverlayAnimation();
+                        System.out.println("Microphone: " + tempDevice.getName());
+                        mThingySdkManager.enableThingyMicrophone(tempDevice, true);
+                        mThingySdkManager.setConstantLedMode(tempDevice, r, g, b);
+                    } else {
+                        //mThingySdkManager.enableThingyMicrophone(tempDevice, false);
+                        //stopThingyOverlayAnimation();
+                        //mStartPlayingAudio = false;
+                    }
+                }
+            }
+            if (mThingySdkManager.isConnected(device)) {
+                if (!mStartPlayingAudio) {
+                    int r = 150;
+                    int g = 0;
+                    int b = 0;
+                    mStartPlayingAudio = true;
+                    startThingyOverlayAnimation();
+                    System.out.println("Microphone: " + device.getName());
+                    mThingySdkManager.enableThingyMicrophone(device, true);
+                    mThingySdkManager.setConstantLedMode(device, r, g, b);
+                } else {
+                    //mThingySdkManager.enableThingyMicrophone(tempDevice, false);
+                    //stopThingyOverlayAnimation();
+                    //mStartPlayingAudio = false;
+                }
+            }
         }
 
         @Override
@@ -172,7 +208,63 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
 
         @Override
         public void onButtonStateChangedEvent(BluetoothDevice bluetoothDevice, int buttonState) {
+            /*mThingies = mThingySdkManager.getConnectedDevices();
+            for (BluetoothDevice tempDevice: mThingies){
+                if (mThingySdkManager.isConnected(tempDevice)) {
+                    if (!mStartPlayingAudio) {
+                        int r = 150;
+                        int g = 0;
 
+                        int b = 0;
+                        //mStartPlayingAudio = true;
+                        startThingyOverlayAnimation();
+                        System.out.println("Microphone: " + tempDevice.getName());
+                        mThingySdkManager.enableThingyMicrophone(tempDevice, true);
+                        mThingySdkManager.setConstantLedMode(tempDevice, r, g, b);
+                    } else {
+                        //mThingySdkManager.enableThingyMicrophone(tempDevice, false);
+                        //stopThingyOverlayAnimation();
+                        //mStartPlayingAudio = false;
+                    }
+                }
+            }
+            if (mThingySdkManager.isConnected(bluetoothDevice)) {
+                if (!mStartPlayingAudio) {
+                    int r = 150;
+                    int g = 0;
+                    int b = 0;
+                    mStartPlayingAudio = true;
+                    startThingyOverlayAnimation();
+                    System.out.println("Microphone: " + bluetoothDevice.getName());
+                    mThingySdkManager.enableThingyMicrophone(bluetoothDevice, true);
+                    mThingySdkManager.setConstantLedMode(bluetoothDevice, r, g, b);
+                } else {
+                    //mThingySdkManager.enableThingyMicrophone(tempDevice, false);
+                    //stopThingyOverlayAnimation();
+                    //mStartPlayingAudio = false;
+                }
+            }*/
+            //mThingiesIterator = mThingies.iterator();
+            /*while(mThingiesIterator.hasNext()){
+                tempDevice = mThingiesIterator.next();
+                if (mThingySdkManager.isConnected(tempDevice)) {
+                    if (!mStartPlayingAudio) {
+                        int r = 150;
+                        int g = 0;
+                        int b = 0;
+                        mStartPlayingAudio = true;
+                        startThingyOverlayAnimation();
+                        System.out.println("Microphone: " + tempDevice.getName());
+                        mThingySdkManager.enableThingyMicrophone(tempDevice, true);
+                        mThingySdkManager.setConstantLedMode(tempDevice, r, g, b);
+                    } else {
+                        //mThingySdkManager.enableThingyMicrophone(tempDevice, false);
+                        //stopThingyOverlayAnimation();
+                        //mStartPlayingAudio = false;
+                    }
+                }
+
+            }*/
         }
 
         @Override
@@ -251,8 +343,49 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
 
                     //PSG edit No.1
                     //audio receive event
-                    if( mStartPlayingAudio = true)
-                         mClhAdvertiser.addAdvSoundData(data);
+                    if( mStartPlayingAudio = true) {
+                        mClhAdvertiser.addAdvSoundData(data);
+                        int r = 0;
+                        int g = 150;
+                        int b = 0;
+                        mThingySdkManager.setConstantLedMode(bluetoothDevice, r, g, b);
+
+                        /*mThingies = mThingySdkManager.getConnectedDevices();
+                        for (BluetoothDevice tempDevice: mThingies){
+                            if (mThingySdkManager.isConnected(tempDevice)) {
+                                if (!mStartPlayingAudio) {
+                                    r = 150;
+                                    g = 0;
+
+                                    b = 0;
+                                    //mStartPlayingAudio = true;
+                                    startThingyOverlayAnimation();
+                                    System.out.println("Microphone: " + tempDevice.getName());
+                                    mThingySdkManager.enableThingyMicrophone(tempDevice, true);
+                                    mThingySdkManager.setConstantLedMode(tempDevice, r, g, b);
+                                } else {
+                                    //mThingySdkManager.enableThingyMicrophone(tempDevice, false);
+                                    //stopThingyOverlayAnimation();
+                                    //mStartPlayingAudio = false;
+                                }
+                            }
+                        }
+                        if (mThingySdkManager.isConnected(bluetoothDevice)) {
+
+                            r = 150;
+                            g = 0;
+                            b = 0;
+                            mStartPlayingAudio = true;
+                            startThingyOverlayAnimation();System.out.println("Microphone: " + bluetoothDevice.getName());
+                            mThingySdkManager.enableThingyMicrophone(bluetoothDevice, false);
+                            mThingySdkManager.setConstantLedMode(bluetoothDevice, r, g, b);
+
+                            //mThingySdkManager.enableThingyMicrophone(tempDevice, false);
+                            //stopThingyOverlayAnimation();
+                            //mStartPlayingAudio = false;
+
+                        }*/
+                    }
                     //End PSG edit No.1
 
                 }
@@ -419,14 +552,19 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
                     tempDevice = mThingiesIterator.next();
                     if (mThingySdkManager.isConnected(tempDevice)) {
                         if (!mStartPlayingAudio) {
-                            mStartPlayingAudio = true;
-                            startThingyOverlayAnimation();
-
-                            mThingySdkManager.enableThingyMicrophone(tempDevice, true);
+                            //mStartPlayingAudio = true;
+                            //startThingyOverlayAnimation();
+                            //System.out.println("Microphone: " tempDevice.getName());
+                            //mThingySdkManager.enableThingyMicrophone(tempDevice, true);
                         } else {
                             mThingySdkManager.enableThingyMicrophone(tempDevice, false);
+                            System.out.println("Turned off: " + tempDevice.getName());
                             stopThingyOverlayAnimation();
                             mStartPlayingAudio = false;
+                            int r = 0;
+                            int g = 0;
+                            int b = 0;
+                            mThingySdkManager.setConstantLedMode(tempDevice, r, g, b);
                         }
                     }
                 }
