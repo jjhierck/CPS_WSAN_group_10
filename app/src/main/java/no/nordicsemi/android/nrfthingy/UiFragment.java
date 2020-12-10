@@ -75,7 +75,9 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
     // NOTE: The old contents of this class can be found in OldUiFragment.java
 
     Button refreshConnectedDevicesBtn;
+    Button disconnectAllDevicesBtn;
     Button connectMoreDevicesBtn;
+    Button connectRestartBtn;
     TextView topText;
     ListView devicesList;
 
@@ -112,7 +114,9 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
         final View rootView = inflater.inflate(R.layout.fragment_ui, container, false);
 
         refreshConnectedDevicesBtn = rootView.findViewById(R.id.refresh_connected_devices);
+        disconnectAllDevicesBtn = rootView.findViewById(R.id.disconnect_all);
         connectMoreDevicesBtn = rootView.findViewById(R.id.connect_more_devices);
+        connectRestartBtn = rootView.findViewById(R.id.restart_connection);
         topText = rootView.findViewById(R.id.current_device);
 
         devicesList = rootView.findViewById(R.id.connected_devices_list);
@@ -131,14 +135,36 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
         refreshConnectedDevicesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            mAdapter.clearDevices();
-            //List<BluetoothDevice> devices = mThingySdkManager.getConnectedDevices();
-                List<ExtendedBluetoothDevice> devices = mScannerFragment.connectedDevices;
-            mAdapter.updateDevices(devices);
-            for (final ExtendedBluetoothDevice device : devices) {
-                addToDatabase(device.device, device.device.getName());
+                mAdapter.clearDevices();
+                //List<BluetoothDevice> devices = mThingySdkManager.getConnectedDevices();
+                List<ExtendedBluetoothDevice> scannerDevices;
+                scannerDevices = mScannerFragment.connectedDevices;
+
+                List<ExtendedBluetoothDevice> actuallyConnectedDevices;
+                actuallyConnectedDevices = new ArrayList<>();
+
+                if (scannerDevices != null){
+                    for (final ExtendedBluetoothDevice scannerDevice : scannerDevices) {
+                        addToDatabase(scannerDevice.device, scannerDevice.device.getName());
+                        for (final BluetoothDevice connectedDevice : mThingySdkManager.getConnectedDevices()) {
+                            if (connectedDevice.getAddress().equals(scannerDevice.device.getAddress())) {
+                                actuallyConnectedDevices.add(scannerDevice);
+                                break;
+                            }
+                        }
+                    }
+                }
+                mAdapter.updateDevices(actuallyConnectedDevices);
+                topText.setText(String.format("%d devices connected", mThingySdkManager.getConnectedDevices().size()));
             }
-            topText.setText(String.format("%d devices connected", devices.size()));
+        });
+
+        disconnectAllDevicesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAdapter.clearDevices();
+                mScannerFragment.connectedDevices = new ArrayList<>();
+                mThingySdkManager.disconnectFromAllThingies();
             }
         });
 
@@ -146,6 +172,16 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
             @Override
             public void onClick(View v) {
                 // Connect to more devices here
+                mScannerFragment.show(getActivity().getSupportFragmentManager(), null); // Show the scanner fragment
+            }
+        });
+
+        connectRestartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAdapter.clearDevices();
+                mScannerFragment.connectedDevices = new ArrayList<>();
+                mThingySdkManager.disconnectFromAllThingies();
                 mScannerFragment.show(getActivity().getSupportFragmentManager(), null); // Show the scanner fragment
             }
         });

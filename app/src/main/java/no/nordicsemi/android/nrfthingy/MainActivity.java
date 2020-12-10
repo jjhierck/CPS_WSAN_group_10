@@ -211,16 +211,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NFCTagFoundDialogFragment mNfcTagFoundDialogFragment;
 
     private void updateDeviceName(BluetoothDevice device, String name) {
-        mThingySdkManager.setDeviceName(device, name);
-        mDatabaseHelper.updateDeviceName(device.getAddress(), name);
-        mConnectedBleDeviceList.clear();
-        mConnectedBleDeviceList.addAll(mThingySdkManager.getConnectedDevices());
-        ArrayList<Thingy> savedDevices = mDatabaseHelper.getSavedDevices();
-        for (final Thingy thingy : savedDevices) {
-            thingy.setDeviceName(name);
-        }
-
-        updateUiOnDeviceConnected(device);
+//        mThingySdkManager.setDeviceName(device, name);
+//        mDatabaseHelper.updateDeviceName(device.getAddress(), name);
+//        mConnectedBleDeviceList.clear();
+//        mConnectedBleDeviceList.addAll(mThingySdkManager.getConnectedDevices());
+//        ArrayList<Thingy> savedDevices = mDatabaseHelper.getSavedDevices();
+//        for (final Thingy thingy : savedDevices) {
+//            thingy.setDeviceName(name);
+//        }
+//
+//        updateUiOnDeviceConnected(device);
     }
 
     private ThingyListener mThingyListener = new ThingyListener() {

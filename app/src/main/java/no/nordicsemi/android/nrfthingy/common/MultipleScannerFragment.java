@@ -302,14 +302,14 @@ public class MultipleScannerFragment extends DialogFragment {
                 String address = device.getAddress();
 
                 mThingySdkManager.connectToThingy(requireContext(), device, ThingyService.class);
-
+                connectedDevices.add(extDevice);
                 Log.w("scanCallback", String.format("Connecting to %s (rssi: %d)", device.getName(), extDevice.rssi));
                 i++; // increment the results counter
                 Toast toast = Toast.makeText(requireContext(), String.format("Connecting to %s (rssi: %d)", device.getName(), extDevice.rssi), Toast.LENGTH_SHORT);
                 toast.show();
             }
         }
-        connectedDevices = sortedDevices;
+        //connectedDevices = sortedDevices;
     }
 
     private ScanCallback scanCallback = new ScanCallback() {
