@@ -203,7 +203,7 @@ public class ClhAdvertise {
             if(isOrginal) {//this packet come from this device-> increase PacketID
                 mCurrentPacketID++;
                 data.setPacketID(mCurrentPacketID);
-                if(data.getThingyDataType() == 255) {           //This is control package from clusterhead which received soundevent
+                if(data.getThingyDataType() == 127) {           //This is control package from clusterhead which received soundevent
                     data.setDestId(standardDestinationID);
                 }
                 //System.out.println("Hello");
