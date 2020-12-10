@@ -24,6 +24,7 @@ public class ClhScan {
     private Handler handler2 = new Handler();
     private boolean mScanning;
     private byte mClhID=1;
+    private int mClhThingySoundPower=100;
     private boolean mIsSink=false;
     private ScanSettings mScanSettings;
 
@@ -214,16 +215,17 @@ public class ClhScan {
                     Log.i(LOG_TAG, "Add data to process list, len:" + mClhProcDataList.size());
 
                     // Sent extra package to let nodes know where the sink is:
-                    byte clhPacketID = 1;
-                    //mClhThingySoundPower = 100;
-                    mClhData.setSourceID(mClhID);
-                    mClhData.setPacketID(clhPacketID);
+                    //byte clhPacketID = 21;
+                    mClhThingySoundPower = 100;
                     mClhData.setDestId(clhAdvData.getSourceID());
+                    mClhData.setSourceID(mClhID);
+                    //mClhData.setPacketID(clhPacketID);
                     mClhData.setHopCount((byte) 21);
-                    //mClhData.setThingyId(0);
-                    //mClhData.setThingyDataType(mClhThingyType);
-                    //mClhData.setSoundPower(mClhThingySoundPower);
+                    mClhData.setThingyId((byte) 21);
+                    mClhData.setThingyDataType((byte) 21);
+                    mClhData.setSoundPower((byte) 21);
                     mClhAdvertiser.addAdvPacketToBuffer(mClhData, true);
+                    mClhAdvertiser.nextAdvertisingPacket();
             }
             else if ((clhAdvData.getHopCounts() <= 20) && (clhAdvData.getDestinationID() != clhAdvData.getSourceID())) {//normal CLuster Head (ID 0..127) add data to advertising list to forward
                     mClhAdvertiser.addAdvPacketToBuffer(clhAdvData,false);
