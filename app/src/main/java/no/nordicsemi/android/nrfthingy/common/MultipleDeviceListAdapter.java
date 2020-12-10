@@ -85,10 +85,10 @@ public class MultipleDeviceListAdapter extends BaseAdapter {
      *
      * @param results scan results
      */
-    public void updateDevices(final List<BluetoothDevice> results) {
-        for (final BluetoothDevice device : results) {
+    public void updateDevices(final List<ExtendedBluetoothDevice> results) {
+        for (final ExtendedBluetoothDevice device : results) {
             if (device != null) {
-                mDevices.add( new ExtendedBluetoothDevice(device, 0));
+                mDevices.add( device );
             }
         }
         notifyDataSetChanged();

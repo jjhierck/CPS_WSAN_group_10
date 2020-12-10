@@ -116,6 +116,8 @@ public class MultipleScannerFragment extends DialogFragment {
 
     private Map<String, ScanResult> mResultsMap;
 
+    public ArrayList<ExtendedBluetoothDevice> connectedDevices;
+
     /**
      * Static implementation of fragment so that it keeps data when phone orientation is changed For standard BLE Service UUID, we can filter devices using normal android provided command
      * startScanLe() with required BLE Service UUID For custom BLE Service UUID, we will use class ScannerServiceParser to filter out required device
@@ -141,6 +143,7 @@ public class MultipleScannerFragment extends DialogFragment {
         mUuid = new ParcelUuid(ThingyUtils.THINGY_BASE_UUID);
         mThingySdkManager = ThingySdkManager.getInstance();
         mResultsMap = new HashMap<>();
+        connectedDevices = new ArrayList<>();
     }
 
     @Override
@@ -306,6 +309,7 @@ public class MultipleScannerFragment extends DialogFragment {
                 toast.show();
             }
         }
+        connectedDevices = sortedDevices;
     }
 
     private ScanCallback scanCallback = new ScanCallback() {

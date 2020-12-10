@@ -56,6 +56,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.nordicsemi.android.nrfthingy.common.DeviceListAdapter;
+import no.nordicsemi.android.nrfthingy.common.ExtendedBluetoothDevice;
+import no.nordicsemi.android.nrfthingy.common.MultipleDeviceListAdapter;
 import no.nordicsemi.android.nrfthingy.common.MultipleScannerFragment;
 import no.nordicsemi.android.nrfthingy.common.ScannerFragmentListener;
 import no.nordicsemi.android.nrfthingy.common.Utils;
@@ -74,12 +76,12 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
 
     Button refreshConnectedDevicesBtn;
     Button connectMoreDevicesBtn;
-    TextView currentDevices;
+    TextView topText;
     ListView devicesList;
 
     private ImageView mHeaderToggle;
 
-    private DeviceListAdapter mAdapter;
+    private MultipleDeviceListAdapter mAdapter;
     private BluetoothDevice mSelectedDevice;
     private ThingySdkManager mThingySdkManager;
     private MultipleScannerFragment mScannerFragment;
@@ -111,18 +113,18 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
 
         refreshConnectedDevicesBtn = rootView.findViewById(R.id.refresh_connected_devices);
         connectMoreDevicesBtn = rootView.findViewById(R.id.connect_more_devices);
-        currentDevices = rootView.findViewById(R.id.current_device);
+        topText = rootView.findViewById(R.id.current_device);
 
         devicesList = rootView.findViewById(R.id.connected_devices_list);
 
         devicesList.setEmptyView(rootView.findViewById(android.R.id.empty));
-        devicesList.setAdapter(mAdapter = new DeviceListAdapter());
+        devicesList.setAdapter(mAdapter = new MultipleDeviceListAdapter());
 
         List<BluetoothDevice> devices = mThingySdkManager.getConnectedDevices();
         if (devices.size() > 0) {
-            currentDevices.setText("");
+            topText.setText("");
             for (final BluetoothDevice device : devices) {
-                currentDevices.setText(String.format("%s - %s", currentDevices.getText(), device.getName()));
+                topText.setText(String.format("%s - %s", topText.getText(), device.getName()));
             }
         }
 
@@ -130,11 +132,13 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
             @Override
             public void onClick(View v) {
             mAdapter.clearDevices();
-            List<BluetoothDevice> devices = mThingySdkManager.getConnectedDevices();
+            //List<BluetoothDevice> devices = mThingySdkManager.getConnectedDevices();
+                List<ExtendedBluetoothDevice> devices = mScannerFragment.connectedDevices;
             mAdapter.updateDevices(devices);
-            for (final BluetoothDevice device : devices) {
-                addToDatabase(device, device.getName());
+            for (final ExtendedBluetoothDevice device : devices) {
+                addToDatabase(device.device, device.device.getName());
             }
+            topText.setText(String.format("%d devices connected", devices.size()));
             }
         });
 
