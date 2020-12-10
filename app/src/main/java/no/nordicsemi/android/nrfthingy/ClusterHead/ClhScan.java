@@ -227,7 +227,7 @@ public class ClhScan {
                     mClhAdvertiser.addAdvPacketToBuffer(mClhData, true);
                     mClhAdvertiser.nextAdvertisingPacket();
             }
-            else if ((clhAdvData.getHopCounts() <= 20) /*&& (clhAdvData.getDestinationID() != clhAdvData.getSourceID())*/) {//normal CLuster Head (ID 0..127) add data to advertising list to forward
+            else if ((clhAdvData.getHopCounts() <= 20) && (clhAdvData.getDestinationID() != clhAdvData.getSourceID())) {//normal CLuster Head (ID 0..127) add data to advertising list to forward
                     mClhAdvertiser.addAdvPacketToBuffer(clhAdvData,false);
                     Log.i(LOG_TAG, "Add data to advertised list, len:" + mClhAdvDataList.size());
                     Log.i(LOG_TAG, "Advertise list at " + (mClhAdvDataList.size() - 1) + ":"

@@ -203,15 +203,18 @@ public class ClhAdvertise {
             if(isOrginal) {//this packet come from this device-> increase PacketID
                 mCurrentPacketID++;
                 data.setPacketID(mCurrentPacketID);
+                if(data.getThingyDataType() == 255) {           //This is control package from clusterhead which received soundevent
+                    data.setDestId(standardDestinationID);
+                }
                 //System.out.println("Hello");
             }
             else if(data.getHopCounts() > 20){
-                System.out.println("Henlo in de if >20");
+                //System.out.println("Henlo in de if >20"); Checking if package received is a routing message
 
-                if (rank > (data.getHopCounts() - 20)){
+                if (rank > (data.getHopCounts() - 20)){ // Setting the rank and standard destination using the hopcounts from the routing message
                     standardDestinationID = data.getSourceID();
                     rank = data.getHopCounts() - 20;
-                    System.out.println("Rank of this device:" + rank);
+                    //System.out.println("Rank of this device:" + rank);
                 }
 
                 byte hopcounts = data.getHopCounts();
@@ -222,7 +225,7 @@ public class ClhAdvertise {
                 byte hopcounts = data.getHopCounts();
                 hopcounts++;
                 data.setHopCount(hopcounts);
-                if(rank < 100) {
+                if(rank < 100) {                            // Setting destination of received packet to standarddestination for this clusterhead
                     data.setDestId(standardDestinationID);
                 }
             }
