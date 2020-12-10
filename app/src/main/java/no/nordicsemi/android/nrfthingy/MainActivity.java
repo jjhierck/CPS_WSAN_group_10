@@ -1896,6 +1896,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case SOUND_FRAGMENT:
                 enableSoundNotifications(device, true);
+                enableUiNotifications();
                 break;
             case CLOUD_FRAGMENT:
                 enableNotificationsForCloudUpload();

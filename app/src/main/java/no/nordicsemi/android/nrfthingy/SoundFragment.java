@@ -47,6 +47,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.annotation.NonNull;
@@ -98,6 +99,14 @@ import no.nordicsemi.android.thingylib.ThingyListenerHelper;
 import no.nordicsemi.android.thingylib.ThingySdkManager;
 import no.nordicsemi.android.thingylib.utils.ThingyUtils;
 
+import static java.lang.Math.PI;
+import static java.lang.Math.abs;
+import static java.lang.Math.cos;
+import static java.lang.Math.log;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.sinh;
+
 public class SoundFragment extends Fragment implements PermissionRationaleDialogFragment.PermissionDialogListener {
 
 
@@ -118,6 +127,8 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
     private ThingySdkManager mThingySdkManager;
     private boolean mStartRecordingAudio = false;
     private boolean mStartPlayingAudio = false;
+    boolean eventDetected = false;
+    int secondsPassed = 0;
 
     private ThingyListener mThingyListener = new ThingyListener() {
         private Handler mHandler = new Handler();
@@ -230,8 +241,47 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
 
         }
 
+        // Filters setup
+        int Fs = 8000; // audio sample rate, believed to be 8kHz
+        int Fzero = 2500; // center frequency, 10kHz for detection of a clap
+        int Fzero2 = 100;
+        double bandWidth = 0.33; // bandWidth in octaves, 0.33 should be narrow enough for a good filter
+        double bandWidth2 = 0.33;
+        int gain = 40;
+
+        //Filter parameters
+        double A = pow(10, (gain/40));                             //gain
+        double wzero = 2 * PI * Fzero / Fs;                     //center frequency in rad/s
+        double wzero2 = 2 * PI * Fzero2 / Fs;
+        double cos = cos(wzero);
+        double cos2 = cos(wzero2);
+        double sin = sin(wzero);
+        double sin2 = sin(wzero2);
+        double alpha = sin*sinh(log(2)/2 * bandWidth * wzero/sin);
+        double alpha2 = sin*sinh(log(2)/2 * bandWidth2 * wzero2/sin);
+
+        //filter1 coefficients
+        double a0 = 1 + alpha / A;
+        double a1 = (-2*cos) / a0;
+        double a2 = (1 - alpha / A) / a0;
+        double b0 = (1 + alpha * A) / a0;
+        double b1 = (-2*cos) / a0;
+        double b2 = (1 - alpha * A) / a0;
+
+        //filter2 coefficients
+        double c0 = 1 + alpha2 / A;
+        double c1 = (-2*cos2) / c0;
+        double c2 = (1 - alpha2 / A) / c0;
+        double d0 = (1 + alpha2 * A) / c0;
+        double d1 = (-2*cos2) / c0;
+        double d2 = (1 - alpha2 * A) / c0;
+
+        double x1, x2, y1, y2, k1, k2, l1, l2 = 0;
+
+
+
         @Override
-        public void onMicrophoneValueChangedEvent(BluetoothDevice bluetoothDevice, final byte[] data) {
+        public void onMicrophoneValueChangedEvent(final BluetoothDevice bluetoothDevice, final byte[] data) {
             if (data != null) {
                 if (data.length != 0) {
 
@@ -241,13 +291,82 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
                         public void run() {
                             mVoiceVisualizer.draw(data);
 
+                            // Measuring the volume of the audio in a sketchy way
+                            double averageVolume = 0;
+                            for(int i = 0; i < data.length; i++) averageVolume += abs((float) data[i]);
+                            averageVolume /= data.length;
+                            //System.out.println("Before Filtering:" + averageVolume);
+
+                            // Filter genakt van: http://blog.bjornroche.com/2012/08/basic-audio-eqs.html
+                            // en soort van toegepast op de dataarray
+                            // A clap has a peak frequency component of 2500 Hz, but so has speech, however speech also has a peak component of 100 Hz, which a clap does not have.
+                            // The filter amplifies the frequencies of 2500 Hz en 100 Hz, after subtracting the result of 100 Hz form 2500 Hz, only a clap should remain.
+
+                            double[] y = new double[data.length];
+                            double[] l = new double[data.length];
+                            for (int i = 0; i < data.length; i++){
+                                y[i] = b0*((float) data[i]) + b1*x1 + b2*x2 - a1*y1 - a2*y2;
+                                l[i] = d0*((float) data[i]) + d1*k1 + d2*k2 - c1*l1 - c2*l2;
+
+                                x2 = x1;
+                                x1 = (float) data[i];
+                                y2 = y1;
+                                y1 = y[i];
+
+                                k2 = k1;
+                                k1 = (float) data[i];
+                                l2 = l1;
+                                l1 = l[i];
+
+                            }
+
+                            for(int i = 0; i < y.length; i++) {
+                                y[i] = abs(y[i]) - abs(l[i]);
+                            }
+
+                            // Check filtered volume
+                            double averageVolumeFiltered = 0;
+                            for(int i = 0; i < y.length; i++) averageVolumeFiltered += (float) y[i];
+                            averageVolumeFiltered /= data.length;
+
+
+                            if (averageVolumeFiltered > 500) {
+                                System.out.println("After Filtering:" + averageVolumeFiltered);
+                                mThingySdkManager.setConstantLedMode(bluetoothDevice, 255, 0, 0);
+                                eventDetected = true;
+
+
+                                // Send a message to the sink
+                                byte clhPacketID=1;
+                                mClhData.setSourceID(mClhID);
+                                mClhData.setPacketID(clhPacketID);
+                                mClhData.setDestId((byte) 0);
+                                mClhData.setHopCount((byte) 0);
+                                mClhData.setThingyId(mClhThingyID);
+                                mClhData.setThingyDataType((byte) 127);
+                                mClhData.setSoundPower(mClhThingySoundPower);
+                                mClhAdvertiser.addAdvPacketToBuffer(mClhData,true);
+                                mClhAdvertiser.nextAdvertisingPacket();
+
+
+                            }
+
+                            // Turn off LED after 2 seconds
+                            if (secondsPassed >= 2) {
+                                mThingySdkManager.setConstantLedMode(bluetoothDevice, 0, 0, 0);
+                                secondsPassed = 0;
+                            }
+
+
+
                         }
                     });
 
                     //PSG edit No.1
                     //audio receive event
-                    if( mStartPlayingAudio = true)
-                         mClhAdvertiser.addAdvSoundData(data);
+                    // if( mStartPlayingAudio = true) mClhAdvertiser.addAdvSoundData(data);
+
+
                     //End PSG edit No.1
 
                 }
@@ -459,6 +578,13 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
             @Override
             public void run() {
                 handler.postDelayed(this, 1000); //loop every cycle
+
+                if (eventDetected) {
+                    secondsPassed++;
+                    if (secondsPassed >=2) eventDetected = false;
+                }
+
+
                 if(mIsSink)
                 {
                     ArrayList<ClhAdvertisedData> procList=mClhProcessor.getProcessDataList();
