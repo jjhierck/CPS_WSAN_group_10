@@ -215,11 +215,11 @@ public class ClhScan {
                     Log.i(LOG_TAG, "Add data to process list, len:" + mClhProcDataList.size());
 
                     // Sent extra package to let nodes know where the sink is:
-                    //byte clhPacketID = 21;
+                    byte clhPacketID = 21;
                     mClhThingySoundPower = 100;
                     mClhData.setDestId(clhAdvData.getSourceID());
                     mClhData.setSourceID(mClhID);
-                    //mClhData.setPacketID(clhPacketID);
+                    mClhData.setPacketID(clhPacketID);
                     mClhData.setHopCount((byte) 21);
                     mClhData.setThingyId((byte) 21);
                     mClhData.setThingyDataType((byte) 21);
@@ -232,6 +232,10 @@ public class ClhScan {
                     Log.i(LOG_TAG, "Add data to advertised list, len:" + mClhAdvDataList.size());
                     Log.i(LOG_TAG, "Advertise list at " + (mClhAdvDataList.size() - 1) + ":"
                             + Arrays.toString(mClhAdvDataList.get(mClhAdvDataList.size() - 1).getParcelClhData()));
+            }
+            else if (clhAdvData.getHopCounts() > 20){
+                    mClhAdvertiser.addAdvPacketToBuffer(clhAdvData,false);
+                    Log.i(LOG_TAG, "Routing message added to buffer");
             }
         }
     }

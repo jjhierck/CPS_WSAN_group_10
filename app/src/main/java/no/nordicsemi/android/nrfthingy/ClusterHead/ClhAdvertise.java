@@ -203,9 +203,10 @@ public class ClhAdvertise {
             if(isOrginal) {//this packet come from this device-> increase PacketID
                 mCurrentPacketID++;
                 data.setPacketID(mCurrentPacketID);
-                System.out.println("Hello");
+                //System.out.println("Hello");
             }
             else if(data.getHopCounts() > 20){
+                System.out.println("Henlo in de if >20");
 
                 if (rank > (data.getHopCounts() - 20)){
                     standardDestinationID = data.getSourceID();
