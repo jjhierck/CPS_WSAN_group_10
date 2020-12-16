@@ -214,7 +214,7 @@ public class ClhAdvertise {
                 if (rank > (data.getHopCounts() - 20)){ // Setting the rank and standard destination using the hopcounts from the routing message
                     standardDestinationID = data.getSourceID();
                     rank = data.getHopCounts() - 20;
-                    //System.out.println("Rank of this device:" + rank);
+                    System.out.println("Rank of this device:" + rank);
                 }
 
                 byte hopcounts = data.getHopCounts();
