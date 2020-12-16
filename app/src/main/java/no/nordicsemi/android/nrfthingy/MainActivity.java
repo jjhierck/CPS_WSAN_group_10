@@ -44,7 +44,10 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -207,7 +210,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ImageView mBatteryLevelImg;
     private NFCTagFoundDialogFragment mNfcTagFoundDialogFragment;
 
+    private void updateDeviceName(BluetoothDevice device, String name) {
+//        mThingySdkManager.setDeviceName(device, name);
+//        mDatabaseHelper.updateDeviceName(device.getAddress(), name);
+//        mConnectedBleDeviceList.clear();
+//        mConnectedBleDeviceList.addAll(mThingySdkManager.getConnectedDevices());
+//        ArrayList<Thingy> savedDevices = mDatabaseHelper.getSavedDevices();
+//        for (final Thingy thingy : savedDevices) {
+//            thingy.setDeviceName(name);
+//        }
+//
+//        updateUiOnDeviceConnected(device);
+    }
+
     private ThingyListener mThingyListener = new ThingyListener() {
+        int incrementingIndex = 0;
+
         @Override
         public void onDeviceConnected(BluetoothDevice device, int connectionState) {
             final String deviceName = mDatabaseHelper.getDeviceName(device.getAddress());
@@ -234,7 +252,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         public void onServiceDiscoveryCompleted(BluetoothDevice device) {
             updateBatteryLevelVisibility(View.VISIBLE);
             onServiceDiscoveryCompletion(device);
-            checkForFwUpdates();
+
+            incrementingIndex++;
+            String name = String.format("g10_%d", incrementingIndex);
+            updateDeviceName(device, name);
+            Log.w(TAG, "DISCOVERY COMPLETED BY MAINACTIVITY FOR "+ name);
+
+            //checkForFwUpdates();
         }
 
         @Override
@@ -990,7 +1014,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         updateSelectionInDb(thingy, true);
     }
 
-    private void connect(final BluetoothDevice device) {
+    public void connect(final BluetoothDevice device) {
         mThingySdkManager.connectToThingy(this, device, ThingyService.class);
         final Thingy thingy = new Thingy(device);
         mThingySdkManager.setSelectedDevice(device);
@@ -1255,7 +1279,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void updateUiOnBind() {
+    void updateUiOnBind() {
         final ArrayList<Thingy> savedDevices = mDatabaseHelper.getSavedDevices();
         if (savedDevices.size() == 0) {
             invalidateOptionsMenu();

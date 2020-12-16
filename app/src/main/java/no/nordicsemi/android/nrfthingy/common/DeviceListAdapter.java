@@ -38,12 +38,15 @@
 
 package no.nordicsemi.android.nrfthingy.common;
 
+import android.bluetooth.BluetoothDevice;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +82,20 @@ public class DeviceListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    /**
+     * If such device exists on the bonded device list, this method does nothing. If not then the device is updated (rssi value) or added.
+     *
+     * @param results scan results
+     */
+    public void updateDevices(final List<BluetoothDevice> results) {
+        for (final BluetoothDevice device : results) {
+            if (device != null) {
+                mDevices.add( new ExtendedBluetoothDevice(device, 0));
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     private ExtendedBluetoothDevice findDevice(final ScanResult result) {
         for (final ExtendedBluetoothDevice device : mDevices)
             if (device.matches(result))
@@ -86,7 +103,7 @@ public class DeviceListAdapter extends BaseAdapter {
         return null;
     }
 
-    void clearDevices() {
+    public void clearDevices() {
         mDevices.clear();
         notifyDataSetChanged();
     }
@@ -171,9 +188,9 @@ public class DeviceListAdapter extends BaseAdapter {
                 holder.name.setText(name != null ? name : parent.getContext().getString(R.string.not_available));
                 holder.address.setText(device.device.getAddress());
                 if (device.rssi != ScannerFragment.NO_RSSI) {
-                    final int rssiPercent = (int) (100.0f * (127.0f + device.rssi) / (127.0f + 20.0f));
-                    holder.rssi.setImageLevel(rssiPercent);
-                    holder.rssi.setVisibility(View.VISIBLE);
+                    // final int rssiPercent = (int) (100.0f * (127.0f + device.rssi) / (127.0f + 20.0f));
+                    holder.rssi.setText(String.format("RSSI: %d", device.rssi));
+                    //holder.rssi.setVisibility(View.VISIBLE);
                 } else {
                     holder.rssi.setVisibility(View.GONE);
                     holder.thingy.setVisibility(View.GONE);
@@ -187,7 +204,8 @@ public class DeviceListAdapter extends BaseAdapter {
     private class ViewHolder {
         private TextView name;
         private TextView address;
-        private ImageView rssi;
+        //private ImageView rssi;
+        private TextView rssi;
         private ImageView thingy;
     }
 }

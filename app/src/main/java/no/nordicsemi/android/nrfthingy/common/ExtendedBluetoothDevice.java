@@ -52,6 +52,15 @@ public class ExtendedBluetoothDevice {
         this.rssi = scanResult.getRssi();
     }
 
+    /**
+     * Save a bluetooth device directly.
+     */
+    public ExtendedBluetoothDevice(final BluetoothDevice device, int rssi) {
+        this.device = device;
+        this.name = device.getName();
+        this.rssi = rssi;
+    }
+
     public boolean matches(final ScanResult scanResult) {
         return device.getAddress().equals(scanResult.getDevice().getAddress());
     }

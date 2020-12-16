@@ -49,9 +49,11 @@
     <string name="no_ble">Device doesn\'t support BLE!</string>
 
     <string name="scanner_title">Select device:</string>
+    <string name="scanner_list">Devices:</string>
     <string name="scanner_empty">No device found</string>
     <string name="scanner_action_scan">Scan</string>
     <string name="scanner_action_cancel">Cancel</string>
+    <string name="scanner_action_stop">Stop</string>
     <string name="not_available">n/a</string>
     <string name="scanner_subtitle_not_bonded">AVAILABLE DEVICES:</string>
     <string name="dev_name_info">Name your Thingy:52</string>
@@ -206,7 +208,12 @@
     <string name="orientation">Orientation</string>
     <string name="tap_count">Taps</string>
     <string name="connect">Connect</string>
+    <string name="connect_more">Connect More</string>
+    <string name="connect_restart">Restart connection</string>
+    <string name="refresh">Refresh</string>
+    <string name="flash_all_red">Flash Red</string>
     <string name="disconnect">Disconnect</string>
+    <string name="disconnect_all">Disconnect All</string>
 
 
     <string name="temperature_graph">Temperature (\u2103)</string>
@@ -471,4 +478,7 @@
         <item quantity="other">%d are disconnected</item>
         <item quantity="many">%d are disconnected</item>
     </plurals>
+    <string name="no_devices">No Thingies connected</string>
+    <string name="devices_title">Connected devices</string>
+    <string name="connected_devices">Connected devices</string>
 </resources>
