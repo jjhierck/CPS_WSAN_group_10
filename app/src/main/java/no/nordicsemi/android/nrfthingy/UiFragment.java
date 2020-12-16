@@ -41,6 +41,7 @@ package no.nordicsemi.android.nrfthingy;
 import android.bluetooth.BluetoothDevice;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +56,6 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nordicsemi.android.nrfthingy.common.DeviceListAdapter;
 import no.nordicsemi.android.nrfthingy.common.ExtendedBluetoothDevice;
 import no.nordicsemi.android.nrfthingy.common.MultipleDeviceListAdapter;
 import no.nordicsemi.android.nrfthingy.common.MultipleScannerFragment;
@@ -78,6 +78,8 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
     Button disconnectAllDevicesBtn;
     Button connectMoreDevicesBtn;
     Button connectRestartBtn;
+    Button flashAllThingiesBtn;
+
     TextView topText;
     ListView devicesList;
 
@@ -117,6 +119,8 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
         disconnectAllDevicesBtn = rootView.findViewById(R.id.disconnect_all);
         connectMoreDevicesBtn = rootView.findViewById(R.id.connect_more_devices);
         connectRestartBtn = rootView.findViewById(R.id.restart_connection);
+        flashAllThingiesBtn = rootView.findViewById(R.id.flash_all_red);
+
         topText = rootView.findViewById(R.id.current_device);
 
         devicesList = rootView.findViewById(R.id.connected_devices_list);
@@ -143,7 +147,7 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
                 List<ExtendedBluetoothDevice> actuallyConnectedDevices;
                 actuallyConnectedDevices = new ArrayList<>();
 
-                if (scannerDevices != null){
+                if (scannerDevices != null) {
                     for (final ExtendedBluetoothDevice scannerDevice : scannerDevices) {
                         addToDatabase(scannerDevice.device, scannerDevice.device.getName());
                         for (final BluetoothDevice connectedDevice : mThingySdkManager.getConnectedDevices()) {
@@ -156,6 +160,22 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
                 }
                 mAdapter.updateDevices(actuallyConnectedDevices);
                 topText.setText(String.format("%d devices connected", mThingySdkManager.getConnectedDevices().size()));
+            }
+        });
+
+        flashAllThingiesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (final BluetoothDevice device : mThingySdkManager.getConnectedDevices()) {
+                    flashLed(device, ThingyUtils.LED_RED);
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            breatheLed(device, ThingyUtils.LED_GREEN);
+                        }
+                    }, 5000);   //5 seconds
+                }
             }
         });
 
@@ -225,6 +245,25 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
             } else {
                 mDatabaseHelper.setLastSelected(thingyList.get(0).getDeviceAddress(), !selected);
             }
+        }
+    }
+
+    private void breatheLed(final BluetoothDevice device, final int colorIndex) {
+        final Thingy thingy = mDatabaseHelper.getSavedDevice(device.getAddress());
+        if (mThingySdkManager.isConnected(device)) {
+            mThingySdkManager.setBreatheLedMode(device, colorIndex, ThingyUtils.DEFAULT_LED_INTENSITY, ThingyUtils.DEFAULT_BREATHE_INTERVAL);
+        } else {
+            Utils.showToast(getActivity(), "Please configureThingy to " + thingy.getDeviceName() + " before you proceed!");
+        }
+    }
+
+
+    private void flashLed(final BluetoothDevice device, final int colorIndex) {
+        final Thingy thingy = mDatabaseHelper.getSavedDevice(device.getAddress());
+        if (mThingySdkManager.isConnected(device)) {
+            mThingySdkManager.setOneShotLedMode(device, colorIndex, ThingyUtils.DEFAULT_LED_INTENSITY);
+        } else {
+            Utils.showToast(getActivity(), "Please configureThingy to " + thingy.getDeviceName() + " before you proceed!");
         }
     }
 

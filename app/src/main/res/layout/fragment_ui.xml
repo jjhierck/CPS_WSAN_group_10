@@ -112,6 +112,19 @@
                         app:layout_constraintStart_toStartOf="parent" />
 
                     <Button
+                        android:id="@+id/flash_all_red"
+                        style="@style/Widget.AppCompat.Button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:text="@string/flash_all_red"
+                        app:layout_constraintBottom_toTopOf="@+id/disconnect_all"
+                        app:layout_constraintEnd_toStartOf="@+id/connect_more_devices"
+                        app:layout_constraintStart_toEndOf="@+id/refresh_connected_devices" />
+
+                    <Button
                         android:id="@+id/disconnect_all"
                         style="@style/Widget.AppCompat.Button"
                         android:layout_width="wrap_content"

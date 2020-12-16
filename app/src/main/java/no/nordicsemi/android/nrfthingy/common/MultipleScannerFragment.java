@@ -101,6 +101,7 @@ public class MultipleScannerFragment extends DialogFragment {
     /* package */static final int NO_RSSI = -1000;
 
     private final static int REQUEST_PERMISSION_REQ_CODE = 76; // any 8-bit number
+    private static final int MAX_CONNECTED_THINGIES = 4;
 
     private LinearLayout troubleshootView;
     private MultipleDeviceListAdapter mAdapter;
@@ -297,7 +298,7 @@ public class MultipleScannerFragment extends DialogFragment {
         int nrConnectedDevices = mThingySdkManager.getConnectedDevices().size();  // See how many devices are currently connected
         int i = 0; // Results counter
         for (final ExtendedBluetoothDevice extDevice : sortedDevices) {
-            if (i + nrConnectedDevices < 4) { // Only connect up to 4 devices with the strongest RSSI
+            if (i + nrConnectedDevices < this.MAX_CONNECTED_THINGIES) { // Only connect up to 4 devices with the strongest RSSI
                 BluetoothDevice device = extDevice.device;
                 String address = device.getAddress();
 
