@@ -315,7 +315,7 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
 
         @Override
         public void onMicrophoneValueChangedEvent(BluetoothDevice bluetoothDevice, final byte[] data) {
-            if (data != null) {
+            /*if (data != null) {
                 if (data.length != 0) {
 
 
@@ -407,7 +407,7 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
                     //End PSG edit No.1
 
                 }
-            }
+            }*/
         }
     };
 
