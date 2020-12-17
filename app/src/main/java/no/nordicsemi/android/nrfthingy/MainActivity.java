@@ -86,6 +86,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -101,6 +102,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
+import no.nordicsemi.android.nrfthingy.ClusterHead.ClhAdvertise;
+import no.nordicsemi.android.nrfthingy.ClusterHead.ClhAdvertisedData;
+import no.nordicsemi.android.nrfthingy.ClusterHead.ClusterHead;
 import no.nordicsemi.android.nrfthingy.common.AboutActivity;
 import no.nordicsemi.android.nrfthingy.common.EnableNFCDialogFragment;
 import no.nordicsemi.android.nrfthingy.common.MessageDialogFragment;
@@ -127,6 +132,13 @@ import no.nordicsemi.android.thingylib.ThingyListenerHelper;
 import no.nordicsemi.android.thingylib.ThingySdkManager;
 import no.nordicsemi.android.thingylib.utils.ThingyUtils;
 
+import static java.lang.Math.PI;
+import static java.lang.Math.abs;
+import static java.lang.Math.cos;
+import static java.lang.Math.log;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.sinh;
 import static no.nordicsemi.android.nrfthingy.common.Utils.CLOUD_FRAGMENT;
 import static no.nordicsemi.android.nrfthingy.common.Utils.CURRENT_DEVICE;
 import static no.nordicsemi.android.nrfthingy.common.Utils.ENVIRONMENT_FRAGMENT;
@@ -210,6 +222,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ImageView mBatteryLevelImg;
     private NFCTagFoundDialogFragment mNfcTagFoundDialogFragment;
 
+    private boolean mStartPlayingAudio = false;
+    boolean eventDetected = false;
+    int secondsPassed = 0;
+
+    private List<BluetoothDevice> mThingies;
+    private Iterator<BluetoothDevice> mThingiesIterator;
+    private BluetoothDevice tempDevice;
+
+    private ClhAdvertisedData mClhData=new ClhAdvertisedData();
+    ClhAdvertise mClhAdvertiser;
+    ClusterHead mClh;
+    private byte mClhID=2;
+    private byte mClhThingyID=1;
+
     private void updateDeviceName(BluetoothDevice device, String name) {
 //        mThingySdkManager.setDeviceName(device, name);
 //        mDatabaseHelper.updateDeviceName(device.getAddress(), name);
@@ -225,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private ThingyListener mThingyListener = new ThingyListener() {
         int incrementingIndex = 0;
+        private Handler mHandler = new Handler();
 
         @Override
         public void onDeviceConnected(BluetoothDevice device, int connectionState) {
@@ -259,6 +286,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.w(TAG, "DISCOVERY COMPLETED BY MAINACTIVITY FOR "+ name);
 
             //checkForFwUpdates();
+            mThingies = mThingySdkManager.getConnectedDevices();
+            for (BluetoothDevice tempDevice: mThingies){
+                if (mThingySdkManager.isConnected(tempDevice)) {
+                    if (!mStartPlayingAudio) {
+                        int r = 150;
+                        int g = 0;
+
+                        int b = 0;
+
+                        //startThingyOverlayAnimation();
+                        System.out.println("Microphone: " + tempDevice.getName());
+                        mThingySdkManager.enableThingyMicrophone(tempDevice, true);
+                        mThingySdkManager.setConstantLedMode(tempDevice, r, g, b);
+                    }
+                }
+            }
+            if (mThingySdkManager.isConnected(device)) {
+                if (!mStartPlayingAudio) {
+                    int r = 150;
+                    int g = 0;
+                    int b = 0;
+                    mStartPlayingAudio = true;
+                    //startThingyOverlayAnimation();
+                    System.out.println("Microphone: " + device.getName());
+                    mThingySdkManager.enableThingyMicrophone(device, true);
+                    mThingySdkManager.setConstantLedMode(device, r, g, b);
+                }
+            }
         }
 
         @Override
@@ -384,9 +439,141 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
+        // Filters setup
+        int Fs = 8000; // audio sample rate, believed to be 8kHz
+        int Fzero = 2500; // center frequency, 10kHz for detection of a clap
+        int Fzero2 = 100;
+        double bandWidth = 0.33; // bandWidth in octaves, 0.33 should be narrow enough for a good filter
+        double bandWidth2 = 0.33;
+        int gain = 40;
+
+        //Filter parameters
+        double A = pow(10, (gain/40));                             //gain
+        double wzero = 2 * PI * Fzero / Fs;                     //center frequency in rad/s
+        double wzero2 = 2 * PI * Fzero2 / Fs;
+        double cos = cos(wzero);
+        double cos2 = cos(wzero2);
+        double sin = sin(wzero);
+        double sin2 = sin(wzero2);
+        double alpha = sin*sinh(log(2)/2 * bandWidth * wzero/sin);
+        double alpha2 = sin*sinh(log(2)/2 * bandWidth2 * wzero2/sin);
+
+        //filter1 coefficients
+        double a0 = 1 + alpha / A;
+        double a1 = (-2*cos) / a0;
+        double a2 = (1 - alpha / A) / a0;
+        double b0 = (1 + alpha * A) / a0;
+        double b1 = (-2*cos) / a0;
+        double b2 = (1 - alpha * A) / a0;
+
+        //filter2 coefficients
+        double c0 = 1 + alpha2 / A;
+        double c1 = (-2*cos2) / c0;
+        double c2 = (1 - alpha2 / A) / c0;
+        double d0 = (1 + alpha2 * A) / c0;
+        double d1 = (-2*cos2) / c0;
+        double d2 = (1 - alpha2 * A) / c0;
+
+        double x1, x2, y1, y2, k1, k2, l1, l2 = 0;
+
+
+
         @Override
         public void onMicrophoneValueChangedEvent(final BluetoothDevice bluetoothDevice, final byte[] data) {
+            if (data != null) {
+                if (data.length != 0) {
 
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            //mVoiceVisualizer.draw(data);
+
+                            // Measuring the volume of the audio in a sketchy way
+                            double averageVolume = 0;
+                            for(int i = 0; i < data.length; i++) averageVolume += abs((float) data[i]);
+                            averageVolume /= data.length;
+                            //System.out.println("Before Filtering:" + averageVolume);
+
+                            // Filter genakt van: http://blog.bjornroche.com/2012/08/basic-audio-eqs.html
+                            // en soort van toegepast op de dataarray
+                            // A clap has a peak frequency component of 2500 Hz, but so has speech, however speech also has a peak component of 100 Hz, which a clap does not have.
+                            // The filter amplifies the frequencies of 2500 Hz en 100 Hz, after subtracting the result of 100 Hz form 2500 Hz, only a clap should remain.
+
+                            double[] y = new double[data.length];
+                            double[] l = new double[data.length];
+                            for (int i = 0; i < data.length; i++){
+                                y[i] = b0*((float) data[i]) + b1*x1 + b2*x2 - a1*y1 - a2*y2;
+                                l[i] = d0*((float) data[i]) + d1*k1 + d2*k2 - c1*l1 - c2*l2;
+
+                                x2 = x1;
+                                x1 = (float) data[i];
+                                y2 = y1;
+                                y1 = y[i];
+
+                                k2 = k1;
+                                k1 = (float) data[i];
+                                l2 = l1;
+                                l1 = l[i];
+
+                            }
+
+                            for(int i = 0; i < y.length; i++) {
+                                y[i] = abs(y[i]) - abs(l[i]);
+                            }
+
+                            // Check filtered volume
+                            double averageVolumeFiltered = 0;
+                            for(int i = 0; i < y.length; i++) averageVolumeFiltered += (float) y[i];
+                            averageVolumeFiltered /= data.length;
+
+
+                            if (averageVolumeFiltered > 500) {
+                                System.out.println("After Filtering:" + averageVolumeFiltered);
+                                mThingySdkManager.setConstantLedMode(bluetoothDevice, 255, 0, 0);
+                                eventDetected = true;
+
+
+                                // Send a message to the sink
+                                byte clhPacketID=1;
+                                //mClhThingyID = bluetoothDevice. thingyID is bullshit
+                                mClhData.setSourceID(mClhID);
+                                mClhData.setPacketID(clhPacketID);
+                                mClhData.setDestId((byte) 0);
+                                mClhData.setHopCount((byte) 0);
+                                mClhData.setThingyId(mClhThingyID);
+                                mClhData.setThingyDataType((byte) 127);
+                                mClhData.setSoundPower((byte) 0);
+                                mClhAdvertiser.addAdvPacketToBuffer(mClhData,true);
+                                mClhAdvertiser.nextAdvertisingPacket();
+
+
+                            }
+
+                            // Turn off LED after 2 seconds
+                            if (secondsPassed >= 2) {
+                                mThingySdkManager.setConstantLedMode(bluetoothDevice, 0, 0, 0);
+                                secondsPassed = 0;
+                            }
+
+
+
+                        }
+                    });
+
+                    //PSG edit No.1
+                    //audio receive event
+                    if( mStartPlayingAudio = true) {
+                        mClhAdvertiser.addAdvSoundData(data);
+                        int r = 0;
+                        int g = 150;
+                        int b = 0;
+                        mThingySdkManager.setConstantLedMode(bluetoothDevice, r, g, b);
+                    }
+                    //End PSG edit No.1
+
+                }
+            }
         }
     };
 
@@ -421,6 +608,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setContentView(R.layout.activity_main);
 
+        mClh=new ClusterHead(mClhID);
+        mClhAdvertiser=mClh.getClhAdvertiser();
         mActivityToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mActivityToolbar);
 
