@@ -229,7 +229,7 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
     public void flashAllThingies() {
         for (final BluetoothDevice device : mThingySdkManager.getConnectedDevices()) {
             //flashLed(device, ThingyUtils.LED_PURPLE);
-            breatheLed(device, ThingyUtils.LED_PURPLE, 100);
+            breatheLed(device, ThingyUtils.LED_RED, 200);
 
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {

@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         @Override
-        public void onServiceDiscoveryCompleted(final BluetoothDevice device) {
+        public void onServiceDiscoveryCompleted(BluetoothDevice device) {
             updateBatteryLevelVisibility(View.VISIBLE);
             onServiceDiscoveryCompletion(device);
 
@@ -371,24 +371,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         public void onButtonStateChangedEvent(BluetoothDevice bluetoothDevice, final int buttonState) {
-            mStartPlayingAudio = false;
-            mThingies = mThingySdkManager.getConnectedDevices();
-            for (BluetoothDevice tempDevice: mThingies){
-                if (mThingySdkManager.isConnected(tempDevice)) {
-                    if (!mStartPlayingAudio) {
-                        int r = 150;
-                        int g = 0;
-
-                        int b = 0;
-
-                        //startThingyOverlayAnimation();
-                        System.out.println("Microphone: " + tempDevice.getName());
-                        mThingySdkManager.enableThingyMicrophone(tempDevice, true);
-                        mThingySdkManager.setConstantLedMode(tempDevice, r, g, b);
-                    }
-                }
-            }
-
             if (bluetoothDevice.equals(mDevice)) {
                 switch (buttonState) {
                     case 0:
@@ -603,7 +585,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         int r = 0;
                         int g = 150;
                         int b = 0;
-                        //mThingySdkManager.setConstantLedMode(bluetoothDevice, r, g, b);
+                        mThingySdkManager.setConstantLedMode(bluetoothDevice, r, g, b);
                     }
                     //End PSG edit No.1
 
