@@ -174,7 +174,7 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
                 if (!mStartPlayingAudio) {
                     int r = 150;
                     int g = 0;
-                    int b = 0;
+                    int b = 150;
                     mStartPlayingAudio = true;
                     startThingyOverlayAnimation();
                     System.out.println("Microphone: " + device.getName());

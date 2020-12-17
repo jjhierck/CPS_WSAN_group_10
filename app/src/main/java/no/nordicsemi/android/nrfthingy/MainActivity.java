@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ImageView mBatteryLevelImg;
     private NFCTagFoundDialogFragment mNfcTagFoundDialogFragment;
 
-    private boolean mStartPlayingAudio = true;
+    private boolean mStartPlayingAudio = false;
     boolean eventDetected = false;
     int secondsPassed = 0;
 
@@ -289,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mThingies = mThingySdkManager.getConnectedDevices();
             for (BluetoothDevice tempDevice: mThingies){
                 if (mThingySdkManager.isConnected(tempDevice)) {
-                    if (mStartPlayingAudio) {
+                    if (!mStartPlayingAudio) {
                         int r = 150;
                         int g = 0;
 
@@ -303,11 +303,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
             if (mThingySdkManager.isConnected(device)) {
-                if (mStartPlayingAudio) {
+                if (!mStartPlayingAudio) {
                     int r = 150;
                     int g = 0;
-                    int b = 0;
-                    //mStartPlayingAudio = true;
+                    int b = 150;
+                    mStartPlayingAudio = true;
                     //startThingyOverlayAnimation();
                     System.out.println("Microphone: " + device.getName());
                     mThingySdkManager.enableThingyMicrophone(device, true);
