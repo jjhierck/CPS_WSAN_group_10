@@ -473,7 +473,7 @@ public class SoundFragmentNew extends Fragment implements PermissionRationaleDia
         if (getArguments() != null) {
             mDevice = getArguments().getParcelable(Utils.CURRENT_DEVICE);
         }
-        mScannerFragment = MultipleScannerFragment.getInstance(ThingyUtils.THINGY_BASE_UUID, this);
+        // mScannerFragment = MultipleScannerFragment.getInstance(ThingyUtils.THINGY_BASE_UUID, this);
         mThingySdkManager = ThingySdkManager.getInstance();
         mDatabaseHelper = new DatabaseHelper(requireContext());
     }
