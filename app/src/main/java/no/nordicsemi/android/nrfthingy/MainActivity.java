@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         @Override
-        public void onServiceDiscoveryCompleted(BluetoothDevice device) {
+        public void onServiceDiscoveryCompleted(final BluetoothDevice device) {
             updateBatteryLevelVisibility(View.VISIBLE);
             onServiceDiscoveryCompletion(device);
 
@@ -286,34 +286,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.w(TAG, "DISCOVERY COMPLETED BY MAINACTIVITY FOR "+ name);
 
             //checkForFwUpdates();
-            mThingies = mThingySdkManager.getConnectedDevices();
-            for (BluetoothDevice tempDevice: mThingies){
-                if (mThingySdkManager.isConnected(tempDevice)) {
-                    if (!mStartPlayingAudio) {
-                        int r = 150;
-                        int g = 0;
+//            Handler handler = new Handler();
+//            handler.postDelayed(new Runnable() {
+//                public void run() {
+//                    if (mThingySdkManager.isConnected(device)) {
+//                        if (!mStartPlayingAudio) {
+//                            int r = 150;
+//                            int g = 150;
+//                            int b = 150;
+//                            mStartPlayingAudio = true;
+//                            //startThingyOverlayAnimation();
+//                            Log.e(TAG, "Microphone: " + device.getName());
+//                            mThingySdkManager.enableThingyMicrophone(device, true);
+//                            mThingySdkManager.setConstantLedMode(device, r, g, b);
+//                        }
+//                    }
+//                }
+//            }, 500);
 
-                        int b = 0;
-
-                        //startThingyOverlayAnimation();
-                        System.out.println("Microphone: " + tempDevice.getName());
-                        mThingySdkManager.enableThingyMicrophone(tempDevice, true);
-                        mThingySdkManager.setConstantLedMode(tempDevice, r, g, b);
-                    }
-                }
-            }
-            if (mThingySdkManager.isConnected(device)) {
-                if (!mStartPlayingAudio) {
-                    int r = 150;
-                    int g = 0;
-                    int b = 150;
-                    mStartPlayingAudio = true;
-                    //startThingyOverlayAnimation();
-                    System.out.println("Microphone: " + device.getName());
-                    mThingySdkManager.enableThingyMicrophone(device, true);
-                    mThingySdkManager.setConstantLedMode(device, r, g, b);
-                }
-            }
         }
 
         @Override
