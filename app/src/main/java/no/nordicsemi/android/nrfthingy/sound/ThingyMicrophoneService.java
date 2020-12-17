@@ -52,6 +52,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Iterator;
+import java.util.List;
 
 import no.nordicsemi.android.nrfthingy.common.Utils;
 import no.nordicsemi.android.thingylib.ThingyConnection;
@@ -64,6 +66,10 @@ public class ThingyMicrophoneService extends IntentService {
     private boolean mStartRecordingAudio = false;
     private BluetoothDevice mDevice;
     private ThingySdkManager mThingySdkManager;
+
+    /*//List of all devices and iterator
+    private List<BluetoothDevice> devicesList;
+    private Iterator<BluetoothDevice> deviceIterator = devicesList.iterator();*/
 
     private BroadcastReceiver mAudioBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -86,8 +92,14 @@ public class ThingyMicrophoneService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable final Intent intent) {
         final String action = intent.getAction();
+        //BluetoothDevice currentDevice;
         switch (action) {
             case Utils.START_RECORDING:
+                /*while(deviceIterator.hasNext()) {
+                    //Record Audio for all devices
+                    currentDevice = deviceIterator.next();
+                    startRecordingAudio(currentDevice);
+                }*/
                 mDevice = intent.getParcelableExtra(Utils.EXTRA_DEVICE);
                 startRecordingAudio(mDevice);
                 break;
@@ -101,6 +113,7 @@ public class ThingyMicrophoneService extends IntentService {
         filter.addAction(Utils.STOP_RECORDING);
         LocalBroadcastManager.getInstance(this).registerReceiver(mAudioBroadcastReceiver, filter);
         mThingySdkManager = ThingySdkManager.getInstance();
+        //devicesList = mThingySdkManager.getConnectedDevices();
     }
 
     @Override
