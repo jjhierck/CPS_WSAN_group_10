@@ -154,7 +154,7 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
 
         @Override
         public void onServiceDiscoveryCompleted(BluetoothDevice device) {
-            mThingies = mThingySdkManager.getConnectedDevices();
+            /*mThingies = mThingySdkManager.getConnectedDevices();
             for (BluetoothDevice tempDevice: mThingies){
                 if (mThingySdkManager.isConnected(tempDevice)) {
                     if (!mStartPlayingAudio) {
@@ -169,9 +169,9 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
                         mThingySdkManager.setConstantLedMode(tempDevice, r, g, b);
                     }
                 }
-            }
-            if (mThingySdkManager.isConnected(device)) {
-                if (!mStartPlayingAudio) {
+            }*/
+            /*if (mThingySdkManager.isConnected(device)) {
+                //if (!mStartPlayingAudio) {
                     int r = 150;
                     int g = 0;
                     int b = 150;
@@ -180,8 +180,8 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
                     System.out.println("Microphone: " + device.getName());
                     mThingySdkManager.enableThingyMicrophone(device, true);
                     mThingySdkManager.setConstantLedMode(device, r, g, b);
-                }
-            }
+                //}
+            }*/
         }
 
         @Override
@@ -211,7 +211,22 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
 
         @Override
         public void onButtonStateChangedEvent(BluetoothDevice bluetoothDevice, int buttonState) {
+            /*mThingies = mThingySdkManager.getConnectedDevices();
+            for (BluetoothDevice tempDevice: mThingies){
+                if (mThingySdkManager.isConnected(tempDevice)) {
+                    if (!mStartPlayingAudio) {
+                        int r = 150;
+                        int g = 0;
 
+                        int b = 0;
+
+                        startThingyOverlayAnimation();
+                        System.out.println("Microphone: " + tempDevice.getName());
+                        mThingySdkManager.enableThingyMicrophone(tempDevice, true);
+                        mThingySdkManager.setConstantLedMode(tempDevice, r, g, b);
+                    }
+                }
+            }*/
         }
 
         @Override
@@ -317,7 +332,7 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
         public void onMicrophoneValueChangedEvent(final BluetoothDevice bluetoothDevice, final byte[] data) {
             if (data != null) {
                 if (data.length != 0) {
-                    System.out.println("Does this do anything?");
+                    System.out.println("SoundFragment?");
 
                     mHandler.post(new Runnable() {
                         @Override
@@ -366,7 +381,7 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
                             if (averageVolumeFiltered > 500) {
                                 System.out.println("After Filtering:" + averageVolumeFiltered);
                                 mThingySdkManager.setConstantLedMode(bluetoothDevice, 255, 0, 0);
-                                //eventDetected = true;
+                                eventDetected = true;
 
 
                                 // Send a message to the sink
@@ -381,7 +396,7 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
                                 mClhAdvertiser.addAdvPacketToBuffer(mClhData,true);
                                 mClhAdvertiser.nextAdvertisingPacket();
 
-
+                                System.out.println("Event Detected");
                             }
 
                             // Turn off LED after 2 seconds
@@ -389,7 +404,7 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
                                 mThingySdkManager.setConstantLedMode(bluetoothDevice, 0, 0, 0);
                                 secondsPassed = 0;
                             }
-                            System.out.println("Event Detected");
+
 
 
                         }
@@ -402,7 +417,7 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
                         int r = 0;
                         int g = 150;
                         int b = 0;
-                        mThingySdkManager.setConstantLedMode(bluetoothDevice, r, g, b);
+                        //mThingySdkManager.setConstantLedMode(bluetoothDevice, r, g, b);
                     }
                     //End PSG edit No.1
 

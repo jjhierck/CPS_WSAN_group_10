@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         @Override
-        public void onServiceDiscoveryCompleted(BluetoothDevice device) {
+        public void onServiceDiscoveryCompleted(final BluetoothDevice device) {
             updateBatteryLevelVisibility(View.VISIBLE);
             onServiceDiscoveryCompletion(device);
 
@@ -285,8 +285,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             updateDeviceName(device, name);
             Log.w(TAG, "DISCOVERY COMPLETED BY MAINACTIVITY FOR "+ name);
 
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (mThingySdkManager.isConnected(device)) {
+                        //if (!mStartPlayingAudio) {
+                        int r = 150;
+                        int g = 0;
+                        int b = 150;
+                        mStartPlayingAudio = true;
+                        //startThingyOverlayAnimation();
+                        System.out.println("Microphone: " + device.getName());
+                        mThingySdkManager.enableThingyMicrophone(device, true);
+                        mThingySdkManager.setConstantLedMode(device, r, g, b);
+                        //}
+                    }
+                }
+            }, 500);
             //checkForFwUpdates();
-            mThingies = mThingySdkManager.getConnectedDevices();
+            /*mThingies = mThingySdkManager.getConnectedDevices();
             for (BluetoothDevice tempDevice: mThingies){
                 if (mThingySdkManager.isConnected(tempDevice)) {
                     if (!mStartPlayingAudio) {
@@ -301,9 +319,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         mThingySdkManager.setConstantLedMode(tempDevice, r, g, b);
                     }
                 }
-            }
-            if (mThingySdkManager.isConnected(device)) {
-                if (!mStartPlayingAudio) {
+            }*/
+            /*if (mThingySdkManager.isConnected(device)) {
+                //if (!mStartPlayingAudio) {
                     int r = 150;
                     int g = 0;
                     int b = 150;
@@ -312,8 +330,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     System.out.println("Microphone: " + device.getName());
                     mThingySdkManager.enableThingyMicrophone(device, true);
                     mThingySdkManager.setConstantLedMode(device, r, g, b);
-                }
-            }
+                //}
+            }*/
         }
 
         @Override
@@ -353,6 +371,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         public void onButtonStateChangedEvent(BluetoothDevice bluetoothDevice, final int buttonState) {
+            mStartPlayingAudio = false;
+            mThingies = mThingySdkManager.getConnectedDevices();
+            for (BluetoothDevice tempDevice: mThingies){
+                if (mThingySdkManager.isConnected(tempDevice)) {
+                    if (!mStartPlayingAudio) {
+                        int r = 150;
+                        int g = 0;
+
+                        int b = 0;
+
+                        //startThingyOverlayAnimation();
+                        System.out.println("Microphone: " + tempDevice.getName());
+                        mThingySdkManager.enableThingyMicrophone(tempDevice, true);
+                        mThingySdkManager.setConstantLedMode(tempDevice, r, g, b);
+                    }
+                }
+            }
+
             if (bluetoothDevice.equals(mDevice)) {
                 switch (buttonState) {
                     case 0:
@@ -480,16 +516,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         public void onMicrophoneValueChangedEvent(final BluetoothDevice bluetoothDevice, final byte[] data) {
-            System.out.println("Help!");
-            if (data != null) {
+            /*if (data != null) {
                 if (data.length != 0) {
-                    System.out.println("Doet dit iets?");
+                    System.out.println("Does this do anything?");
 
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             //mVoiceVisualizer.draw(data);
-                            System.out.println("Receiving microphone stuff");
+
                             // Measuring the volume of the audio in a sketchy way
                             double averageVolume = 0;
                             for(int i = 0; i < data.length; i++) averageVolume += abs((float) data[i]);
@@ -531,24 +566,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             if (averageVolumeFiltered > 500) {
                                 System.out.println("After Filtering:" + averageVolumeFiltered);
-                                mThingySdkManager.setConstantLedMode(bluetoothDevice, 255, 0, 0);
+                                mThingySdkManager.setConstantLedMode(bluetoothDevice, 255, 255, 0);
                                 //eventDetected = true;
 
 
                                 // Send a message to the sink
                                 byte clhPacketID=1;
-                                //mClhThingyID = bluetoothDevice. thingyID is bullshit
                                 /*mClhData.setSourceID(mClhID);
-                                mClhData.setPacketID((byte) 100);
+                                mClhData.setPacketID(clhPacketID);
                                 mClhData.setDestId((byte) 0);
                                 mClhData.setHopCount((byte) 0);
                                 mClhData.setThingyId(mClhThingyID);
                                 mClhData.setThingyDataType((byte) 127);
                                 mClhData.setSoundPower((byte) 0);
                                 mClhAdvertiser.addAdvPacketToBuffer(mClhData,true);
-                                mClhAdvertiser.nextAdvertisingPacket();*/
+                                mClhAdvertiser.nextAdvertisingPacket();
 
-                                System.out.println("Event detected");
+                                System.out.println("Event Detected");
                             }
 
                             // Turn off LED after 2 seconds
@@ -564,17 +598,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     //PSG edit No.1
                     //audio receive event
-                    if(mStartPlayingAudio) {
+                    if( mStartPlayingAudio = true) {
                         mClhAdvertiser.addAdvSoundData(data);
                         int r = 0;
                         int g = 150;
                         int b = 0;
-                        mThingySdkManager.setConstantLedMode(bluetoothDevice, r, g, b);
+                        //mThingySdkManager.setConstantLedMode(bluetoothDevice, r, g, b);
                     }
                     //End PSG edit No.1
 
                 }
-            }
+            }*/
         }
     };
 
