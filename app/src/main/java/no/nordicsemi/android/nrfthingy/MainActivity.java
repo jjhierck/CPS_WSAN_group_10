@@ -480,15 +480,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         public void onMicrophoneValueChangedEvent(final BluetoothDevice bluetoothDevice, final byte[] data) {
+            System.out.println("Help!");
             if (data != null) {
                 if (data.length != 0) {
-
+                    System.out.println("Doet dit iets?");
 
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             //mVoiceVisualizer.draw(data);
-
+                            System.out.println("Receiving microphone stuff");
                             // Measuring the volume of the audio in a sketchy way
                             double averageVolume = 0;
                             for(int i = 0; i < data.length; i++) averageVolume += abs((float) data[i]);
@@ -555,7 +556,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 mThingySdkManager.setConstantLedMode(bluetoothDevice, 0, 0, 0);
                                 secondsPassed = 0;
                             }
-
+                            System.out.println("Event detected");
 
 
                         }
