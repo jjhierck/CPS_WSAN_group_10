@@ -103,7 +103,7 @@
                     <Button
                         android:id="@+id/refresh_connected_devices"
                         style="@style/Widget.AppCompat.Button"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginBottom="16dp"
@@ -116,13 +116,11 @@
                         style="@style/Widget.AppCompat.Button"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
                         android:text="@string/flash_all_red"
-                        app:layout_constraintBottom_toTopOf="@+id/disconnect_all"
-                        app:layout_constraintEnd_toStartOf="@+id/connect_more_devices"
-                        app:layout_constraintStart_toEndOf="@+id/refresh_connected_devices" />
+                        app:layout_constraintBottom_toTopOf="@+id/restart_connection"
+                        app:layout_constraintEnd_toEndOf="parent" />
 
                     <Button
                         android:id="@+id/disconnect_all"
@@ -134,17 +132,6 @@
                         android:text="@string/disconnect_all"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent" />
-
-                    <Button
-                        android:id="@+id/connect_more_devices"
-                        style="@style/Widget.AppCompat.Button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
-                        android:text="@string/connect_more"
-                        app:layout_constraintBottom_toTopOf="@+id/restart_connection"
-                        app:layout_constraintEnd_toEndOf="parent" />
 
                     <Button
                         android:id="@+id/restart_connection"

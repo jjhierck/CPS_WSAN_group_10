@@ -76,7 +76,6 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
 
     Button refreshConnectedDevicesBtn;
     Button disconnectAllDevicesBtn;
-    Button connectMoreDevicesBtn;
     Button connectRestartBtn;
     Button flashAllThingiesBtn;
 
@@ -117,7 +116,6 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
 
         refreshConnectedDevicesBtn = rootView.findViewById(R.id.refresh_connected_devices);
         disconnectAllDevicesBtn = rootView.findViewById(R.id.disconnect_all);
-        connectMoreDevicesBtn = rootView.findViewById(R.id.connect_more_devices);
         connectRestartBtn = rootView.findViewById(R.id.restart_connection);
         flashAllThingiesBtn = rootView.findViewById(R.id.flash_all_red);
 
@@ -154,14 +152,6 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
             @Override
             public void onClick(View v) {
                 disconnectAllDevices();
-            }
-        });
-
-        connectMoreDevicesBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Connect to more devices here
-                mScannerFragment.show(getActivity().getSupportFragmentManager(), null); // Show the scanner fragment
             }
         });
 
