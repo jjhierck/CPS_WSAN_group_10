@@ -120,19 +120,17 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
         flashAllThingiesBtn = rootView.findViewById(R.id.flash_all_red);
 
         topText = rootView.findViewById(R.id.current_device);
-
         devicesList = rootView.findViewById(R.id.connected_devices_list);
-
         devicesList.setEmptyView(rootView.findViewById(android.R.id.empty));
         devicesList.setAdapter(mAdapter = new MultipleDeviceListAdapter());
 
-        List<BluetoothDevice> devices = mThingySdkManager.getConnectedDevices();
-        if (devices.size() > 0) {
-            topText.setText("");
-            for (final BluetoothDevice device : devices) {
-                topText.setText(String.format("%s - %s", topText.getText(), device.getName()));
-            }
-        }
+//        List<BluetoothDevice> devices = mThingySdkManager.getConnectedDevices();
+//        if (devices.size() > 0) {
+//            topText.setText("");
+//            for (final BluetoothDevice device : devices) {
+//                topText.setText(String.format("%s - %s", topText.getText(), device.getName()));
+//            }
+//        }
 
         refreshConnectedDevicesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -230,7 +228,8 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
 
     public void flashAllThingies() {
         for (final BluetoothDevice device : mThingySdkManager.getConnectedDevices()) {
-            flashLed(device, ThingyUtils.LED_RED);
+            //flashLed(device, ThingyUtils.LED_PURPLE);
+            breatheLed(device, ThingyUtils.LED_PURPLE, 100);
 
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -254,13 +253,17 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
         mThingySdkManager.disconnectFromAllThingies();
     }
 
-    private void breatheLed(final BluetoothDevice device, final int colorIndex) {
+    private void breatheLed(final BluetoothDevice device, final int colorIndex, int breatheInterval) {
         final Thingy thingy = mDatabaseHelper.getSavedDevice(device.getAddress());
         if (mThingySdkManager.isConnected(device)) {
-            mThingySdkManager.setBreatheLedMode(device, colorIndex, ThingyUtils.DEFAULT_LED_INTENSITY, ThingyUtils.DEFAULT_BREATHE_INTERVAL);
+            mThingySdkManager.setBreatheLedMode(device, colorIndex, ThingyUtils.DEFAULT_LED_INTENSITY, breatheInterval);
         } else {
             Utils.showToast(getActivity(), "Please configureThingy to " + thingy.getDeviceName() + " before you proceed!");
         }
+    }
+
+    private void breatheLed(final BluetoothDevice device, final int colorIndex) {
+        breatheLed(device, colorIndex, ThingyUtils.DEFAULT_BREATHE_INTERVAL);
     }
 
 
