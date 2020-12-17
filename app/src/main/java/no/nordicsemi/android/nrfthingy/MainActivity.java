@@ -381,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         public void onTapValueChangedEvent(final BluetoothDevice bluetoothDevice, final int direction, final int count) {
-
+            System.out.println("Doe iets");
         }
 
         @Override
@@ -532,23 +532,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             if (averageVolumeFiltered > 500) {
                                 System.out.println("After Filtering:" + averageVolumeFiltered);
                                 mThingySdkManager.setConstantLedMode(bluetoothDevice, 255, 0, 0);
-                                eventDetected = true;
+                                //eventDetected = true;
 
 
                                 // Send a message to the sink
                                 byte clhPacketID=1;
                                 //mClhThingyID = bluetoothDevice. thingyID is bullshit
-                                mClhData.setSourceID(mClhID);
-                                mClhData.setPacketID(clhPacketID);
+                                /*mClhData.setSourceID(mClhID);
+                                mClhData.setPacketID((byte) 100);
                                 mClhData.setDestId((byte) 0);
                                 mClhData.setHopCount((byte) 0);
                                 mClhData.setThingyId(mClhThingyID);
                                 mClhData.setThingyDataType((byte) 127);
                                 mClhData.setSoundPower((byte) 0);
                                 mClhAdvertiser.addAdvPacketToBuffer(mClhData,true);
-                                mClhAdvertiser.nextAdvertisingPacket();
+                                mClhAdvertiser.nextAdvertisingPacket();*/
 
-
+                                System.out.println("Event detected");
                             }
 
                             // Turn off LED after 2 seconds
@@ -556,7 +556,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 mThingySdkManager.setConstantLedMode(bluetoothDevice, 0, 0, 0);
                                 secondsPassed = 0;
                             }
-                            System.out.println("Event detected");
+
 
 
                         }
@@ -924,6 +924,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void run() {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
+
+                if (eventDetected) {
+                    secondsPassed++;
+                    if (secondsPassed >=10) eventDetected = false;
+                }
             }
         }, 200);
         return true;

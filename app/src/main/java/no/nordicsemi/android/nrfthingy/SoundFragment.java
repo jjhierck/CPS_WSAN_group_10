@@ -314,10 +314,10 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
 
 
         @Override
-        public void onMicrophoneValueChangedEvent(BluetoothDevice bluetoothDevice, final byte[] data) {
-            /*if (data != null) {
+        public void onMicrophoneValueChangedEvent(final BluetoothDevice bluetoothDevice, final byte[] data) {
+            if (data != null) {
                 if (data.length != 0) {
-
+                    System.out.println("Does this do anything?");
 
                     mHandler.post(new Runnable() {
                         @Override
@@ -366,7 +366,7 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
                             if (averageVolumeFiltered > 500) {
                                 System.out.println("After Filtering:" + averageVolumeFiltered);
                                 mThingySdkManager.setConstantLedMode(bluetoothDevice, 255, 0, 0);
-                                eventDetected = true;
+                                //eventDetected = true;
 
 
                                 // Send a message to the sink
@@ -389,7 +389,7 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
                                 mThingySdkManager.setConstantLedMode(bluetoothDevice, 0, 0, 0);
                                 secondsPassed = 0;
                             }
-
+                            System.out.println("Event Detected");
 
 
                         }
@@ -407,7 +407,7 @@ public class SoundFragment extends Fragment implements PermissionRationaleDialog
                     //End PSG edit No.1
 
                 }
-            }*/
+            }
         }
     };
 
