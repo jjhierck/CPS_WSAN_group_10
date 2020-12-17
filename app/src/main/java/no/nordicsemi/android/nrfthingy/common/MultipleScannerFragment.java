@@ -101,7 +101,7 @@ public class MultipleScannerFragment extends DialogFragment {
     /* package */static final int NO_RSSI = -1000;
 
     private final static int REQUEST_PERMISSION_REQ_CODE = 76; // any 8-bit number
-    private static final int MAX_CONNECTED_THINGIES = 4;
+    private static final int MAX_CONNECTED_THINGIES = 1;
 
     private LinearLayout troubleshootView;
     private MultipleDeviceListAdapter mAdapter;
