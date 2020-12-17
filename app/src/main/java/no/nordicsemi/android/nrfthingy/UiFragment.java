@@ -139,52 +139,21 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
         refreshConnectedDevicesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAdapter.clearDevices();
-                //List<BluetoothDevice> devices = mThingySdkManager.getConnectedDevices();
-                List<ExtendedBluetoothDevice> scannerDevices;
-                scannerDevices = mScannerFragment.connectedDevices;
-
-                List<ExtendedBluetoothDevice> actuallyConnectedDevices;
-                actuallyConnectedDevices = new ArrayList<>();
-
-                if (scannerDevices != null) {
-                    for (final ExtendedBluetoothDevice scannerDevice : scannerDevices) {
-                        addToDatabase(scannerDevice.device, scannerDevice.device.getName());
-                        for (final BluetoothDevice connectedDevice : mThingySdkManager.getConnectedDevices()) {
-                            if (connectedDevice.getAddress().equals(scannerDevice.device.getAddress())) {
-                                actuallyConnectedDevices.add(scannerDevice);
-                                break;
-                            }
-                        }
-                    }
-                }
-                mAdapter.updateDevices(actuallyConnectedDevices);
-                topText.setText(String.format("%d devices connected", mThingySdkManager.getConnectedDevices().size()));
+                refresh();
             }
         });
 
         flashAllThingiesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (final BluetoothDevice device : mThingySdkManager.getConnectedDevices()) {
-                    flashLed(device, ThingyUtils.LED_RED);
-
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
-                            breatheLed(device, ThingyUtils.LED_GREEN);
-                        }
-                    }, 5000);   //5 seconds
-                }
+                flashAllThingies();
             }
         });
 
         disconnectAllDevicesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAdapter.clearDevices();
-                mScannerFragment.connectedDevices = new ArrayList<>();
-                mThingySdkManager.disconnectFromAllThingies();
+                disconnectAllDevices();
             }
         });
 
@@ -199,10 +168,7 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
         connectRestartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAdapter.clearDevices();
-                mScannerFragment.connectedDevices = new ArrayList<>();
-                mThingySdkManager.disconnectFromAllThingies();
-                mScannerFragment.show(getActivity().getSupportFragmentManager(), null); // Show the scanner fragment
+                restartConnection();
             }
         });
 
@@ -246,6 +212,56 @@ public class UiFragment extends Fragment implements ScannerFragmentListener {
                 mDatabaseHelper.setLastSelected(thingyList.get(0).getDeviceAddress(), !selected);
             }
         }
+    }
+
+    public void refresh() {
+        mAdapter.clearDevices();
+        //List<BluetoothDevice> devices = mThingySdkManager.getConnectedDevices();
+        List<ExtendedBluetoothDevice> scannerDevices;
+        scannerDevices = mScannerFragment.connectedDevices;
+
+        List<ExtendedBluetoothDevice> actuallyConnectedDevices;
+        actuallyConnectedDevices = new ArrayList<>();
+
+        if (scannerDevices != null) {
+            for (final ExtendedBluetoothDevice scannerDevice : scannerDevices) {
+                addToDatabase(scannerDevice.device, scannerDevice.device.getName());
+                for (final BluetoothDevice connectedDevice : mThingySdkManager.getConnectedDevices()) {
+                    if (connectedDevice.getAddress().equals(scannerDevice.device.getAddress())) {
+                        actuallyConnectedDevices.add(scannerDevice);
+                        break;
+                    }
+                }
+            }
+        }
+        mAdapter.updateDevices(actuallyConnectedDevices);
+        topText.setText(String.format("%d devices connected", mThingySdkManager.getConnectedDevices().size()));
+    }
+
+    public void flashAllThingies() {
+        for (final BluetoothDevice device : mThingySdkManager.getConnectedDevices()) {
+            flashLed(device, ThingyUtils.LED_RED);
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    breatheLed(device, ThingyUtils.LED_GREEN);
+                }
+            }, 5000);   //5 seconds
+        }
+    }
+
+    public void restartConnection() {
+        mAdapter.clearDevices();
+        mScannerFragment.connectedDevices = new ArrayList<>();
+        mThingySdkManager.disconnectFromAllThingies();
+        mScannerFragment.show(getActivity().getSupportFragmentManager(), null); // Show the scanner fragment
+    }
+
+    public void disconnectAllDevices() {
+        mAdapter.clearDevices();
+        mScannerFragment.connectedDevices = new ArrayList<>();
+        mThingySdkManager.disconnectFromAllThingies();
     }
 
     private void breatheLed(final BluetoothDevice device, final int colorIndex) {
